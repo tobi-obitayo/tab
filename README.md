@@ -1,5 +1,7 @@
 # Tab Dashboard
 
+![Tab Dashboard](screenshot.png)
+
 A personal dashboard that replaces Chrome's new tab page. Built with vanilla JS and IndexedDB — no frameworks, no backend, nothing leaves your browser.
 
 > v0.1 — in active development. I use this as my daily driver and fix things as I find them.
