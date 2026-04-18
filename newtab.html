@@ -471,7 +471,7 @@
     user-select: none;
   }
   .type-opt:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
-  .type-opt .icon { font-size: 15px; width: 18px; text-align: center; }
+  .type-opt .icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--muted); }
 
   /* ── Chrome blocks (clock, search, shortcuts) ───────────────────────── */
   .chrome-block {
@@ -1359,9 +1359,30 @@
     <div class="type-picker" id="type-picker">
       <button class="btn btn-dark" id="btn-add">+ add widget</button>
       <div class="type-dropdown" id="type-dropdown">
-        <div class="type-opt" data-type="note"><span class="icon">📝</span> Note</div>
-        <div class="type-opt" data-type="task"><span class="icon">✅</span> Tasks</div>
-        <div class="type-opt" data-type="link"><span class="icon">🔗</span> Links</div>
+        <div class="type-opt" data-type="note">
+          <svg class="icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="2" width="12" height="14" rx="2"/>
+            <line x1="6" y1="6" x2="12" y2="6"/>
+            <line x1="6" y1="9" x2="12" y2="9"/>
+            <line x1="6" y1="12" x2="9" y2="12"/>
+          </svg>
+          Note
+        </div>
+        <div class="type-opt" data-type="task">
+          <svg class="icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,9 7,12 14,5"/>
+            <rect x="2" y="2" width="14" height="14" rx="2"/>
+          </svg>
+          Tasks
+        </div>
+        <div class="type-opt" data-type="link">
+          <svg class="icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 11l4-4"/>
+            <path d="M10.5 6.5l1.5-1.5a3.5 3.5 0 0 1 5 5l-1.5 1.5"/>
+            <path d="M7.5 11.5L6 13a3.5 3.5 0 0 1-5-5l1.5-1.5"/>
+          </svg>
+          Links
+        </div>
       </div>
     </div>
   </div>
