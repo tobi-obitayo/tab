@@ -965,7 +965,6 @@ function setEditMode(on) {
     state.layoutMode = false;
     document.body.classList.remove('layout-mode');
     btnLayout.classList.remove('active');
-    btnLayout.textContent = 'layout';
   }
   state.editMode = on;
   document.body.classList.toggle('edit-mode', on);
@@ -984,7 +983,6 @@ function setLayoutMode(on) {
   state.layoutMode = on;
   document.body.classList.toggle('layout-mode', on);
   btnLayout.classList.toggle('active', on);
-  btnLayout.textContent = on ? 'unlock' : 'layout';
 }
 
 btnEdit.addEventListener('click',   () => setEditMode(!state.editMode));
