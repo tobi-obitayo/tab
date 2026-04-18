@@ -483,7 +483,7 @@ function createWidgetEl(w) {
   el.className = 'widget';
   el.dataset.id   = w.id;
   el.dataset.type = w.type;
-  el.style.cssText = `left:${w.x}px; top:${w.y}px; width:${w.w}px; height:${w.h}px;`;
+  el.style.cssText = `left:${w.x}px; top:${w.y}px; width:${w.w}px; height:${w.h}px; z-index:${w.z || 0};`;
   el.style.setProperty('--wc', w.color);
 
   const swatches = PALETTE.map(c =>
@@ -502,6 +502,12 @@ function createWidgetEl(w) {
             <path d="M2 12h20"/>
           </svg>
           <div class="color-popup">${swatches}</div>
+        </button>
+        <button class="act-btn front" title="Bring to front">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+            <path d="M2 11V3a1.5 1.5 0 0 1 1.5-1.5H11" opacity="0.45"/>
+          </svg>
         </button>
         <button class="act-btn edit" title="Edit">✎</button>
         <button class="act-btn del"  title="Delete">✕</button>
@@ -531,6 +537,11 @@ function createWidgetEl(w) {
     dbSave(w);
   });
 
+  el.querySelector('.act-btn.front').addEventListener('click', e => {
+    e.stopPropagation();
+    bringToFront(w.id);
+  });
+
   el.querySelector('.act-btn.edit').addEventListener('click', e => {
     e.stopPropagation();
     if (EDIT_MODE_MODEL === 'b' || state.editMode) makeBodyEditable(el, w);
@@ -540,6 +551,8 @@ function createWidgetEl(w) {
     e.stopPropagation();
     deleteWidget(w.id);
   });
+
+  el.addEventListener('mousedown', () => bringToFront(w.id));
 
   el.addEventListener('click', e => {
     if (state.layoutMode) return; // widgets frozen in layout mode
@@ -939,6 +952,16 @@ function showUndoToast(label) {
       pendingDelete = null;
     }
   }, 5000);
+}
+
+function bringToFront(id) {
+  const maxZ = Math.max(0, ...state.widgets.map(w => w.z || 0));
+  const w = state.widgets.find(w => w.id === id);
+  if (!w) return;
+  if ((w.z || 0) === maxZ && maxZ > 0) return;
+  w.z = maxZ + 1;
+  document.querySelector(`.widget[data-id="${id}"]`).style.zIndex = w.z;
+  dbSave(w);
 }
 
 function deleteWidget(id) {
