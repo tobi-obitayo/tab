@@ -478,7 +478,7 @@
   /* ── Chrome blocks (clock, search, shortcuts) ───────────────────────── */
   .chrome-block {
     position: absolute;
-    z-index: 1;
+    z-index: 100;
   }
 
   /* Layout mode: chrome blocks are draggable (indigo accent) */
@@ -1052,7 +1052,7 @@
   }
   body.edit-mode .widget          { outline: 1.5px dashed rgba(0,0,0,0.18); }
   body.edit-mode .widget:hover    { outline-color: rgba(0,0,0,0.4); }
-  .widget.dragging                { box-shadow: var(--shadow-lg); opacity: 0.94; }
+  .widget.dragging                { box-shadow: var(--shadow-lg); z-index: 50 !important; opacity: 0.94; }
 
   /* ── Widget header ──────────────────────────────────────────────────── */
   .widget-header {
