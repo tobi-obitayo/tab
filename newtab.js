@@ -1189,6 +1189,38 @@ document.querySelectorAll('.em-btn').forEach(btn => {
 });
 
 // =============================================================================
+// TOOLBAR TOGGLES
+// =============================================================================
+
+const TOOLBAR_TOGGLES = [
+  { id: 'tog-gmail',  key: 'toolbar-gmail',  elId: 'gc-gmail'  },
+  { id: 'tog-images', key: 'toolbar-images', elId: 'gc-images' },
+  { id: 'tog-apps',   key: 'toolbar-apps',   elId: 'btn-apps'  },
+  { id: 'tog-avatar', key: 'toolbar-avatar', elId: 'avatar'    },
+];
+
+function applyToolbarToggles() {
+  TOOLBAR_TOGGLES.forEach(({ key, elId }) => {
+    const visible = localStorage.getItem(key) !== '0';
+    const el = document.getElementById(elId);
+    if (el) el.style.display = visible ? '' : 'none';
+  });
+}
+
+function initToolbarToggles() {
+  applyToolbarToggles();
+  TOOLBAR_TOGGLES.forEach(({ id, key }) => {
+    const checkbox = document.getElementById(id);
+    if (!checkbox) return;
+    checkbox.checked = localStorage.getItem(key) !== '0';
+    checkbox.addEventListener('change', () => {
+      localStorage.setItem(key, checkbox.checked ? '1' : '0');
+      applyToolbarToggles();
+    });
+  });
+}
+
+// =============================================================================
 // PAGES — switcher UI (pages mode only)
 // =============================================================================
 
@@ -1343,6 +1375,7 @@ async function init() {
   });
 
   setupViewportModel();
+  initToolbarToggles();
   renderAll();
 }
 
