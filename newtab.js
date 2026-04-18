@@ -11,7 +11,7 @@ const GRID  = 20;
 const MIN_W = 160;
 const MIN_H = 100;
 
-const PALETTE = ['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)'];
+const PALETTE = ['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
 
 const DEFAULTS = {
   note: { w: 280, h: 220 },
@@ -486,11 +486,23 @@ function createWidgetEl(w) {
   el.style.cssText = `left:${w.x}px; top:${w.y}px; width:${w.w}px; height:${w.h}px;`;
   el.style.setProperty('--wc', w.color);
 
+  const swatches = PALETTE.map(c =>
+    `<span class="color-swatch${w.color === c ? ' active' : ''}" data-color="${c}" style="background:${c}"></span>`
+  ).join('');
+
   el.innerHTML = `
     <div class="widget-header">
       <span class="drag-handle" title="Drag to move">⠿</span>
       <span class="widget-title">${esc(w.title || 'Untitled')}</span>
       <div class="widget-actions">
+        <button class="act-btn color" title="Color">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a10 10 0 0 1 0 20"/>
+            <path d="M2 12h20"/>
+          </svg>
+          <div class="color-popup">${swatches}</div>
+        </button>
         <button class="act-btn edit" title="Edit">✎</button>
         <button class="act-btn del"  title="Delete">✕</button>
       </div>
@@ -498,6 +510,26 @@ function createWidgetEl(w) {
     <div class="widget-body">${renderBody(w)}</div>
     <div class="resize-handle"></div>
   `;
+
+  el.querySelector('.act-btn.color').addEventListener('click', e => {
+    e.stopPropagation();
+    const popup = el.querySelector('.color-popup');
+    const isOpen = popup.classList.contains('open');
+    document.querySelectorAll('.color-popup.open').forEach(p => p.classList.remove('open'));
+    if (!isOpen) popup.classList.add('open');
+  });
+
+  el.querySelector('.color-popup').addEventListener('click', e => {
+    const swatch = e.target.closest('.color-swatch');
+    if (!swatch) return;
+    e.stopPropagation();
+    const color = swatch.dataset.color;
+    w.color = color;
+    el.style.setProperty('--wc', color);
+    el.querySelectorAll('.color-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
+    el.querySelector('.color-popup').classList.remove('open');
+    dbSave(w);
+  });
 
   el.querySelector('.act-btn.edit').addEventListener('click', e => {
     e.stopPropagation();
@@ -997,6 +1029,7 @@ typeDropdown.querySelectorAll('.type-opt').forEach(opt => {
 });
 
 document.addEventListener('click', () => typeDropdown.classList.remove('open'));
+document.addEventListener('click', () => document.querySelectorAll('.color-popup.open').forEach(p => p.classList.remove('open')));
 
 // =============================================================================
 // APPS PANEL

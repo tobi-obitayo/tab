@@ -22,6 +22,7 @@
 
     --c0: #FDECC8; --c1: #D3E8CC; --c2: #FADADD;
     --c3: #C8DFF5; --c4: #DDD1F0; --c5: #D4EEE2;
+    --c6: #FADCC8; --c7: #E8E3DC;
   }
 
   /* ── Dark mode tokens (body.dark class, toggled manually) ──────────── */
@@ -34,6 +35,7 @@
     --shadow-lg: 0 12px 40px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
     --c0: #4A3800; --c1: #1A3D2B; --c2: #4A1020;
     --c3: #0D2A4A; --c4: #2A1A4A; --c5: #0D3028;
+    --c6: #4A2010; --c7: #2E2A24;
   }
   body.dark .widget {
     background: var(--wc, var(--bg));
@@ -1103,6 +1105,36 @@
   }
   .act-btn:hover     { background: rgba(0,0,0,0.12); color: var(--text); }
   .act-btn.del:hover { background: #FECACA; color: #DC2626; }
+
+  /* ── Widget color popup ─────────────────────────────────────────────── */
+  .color-popup {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 200;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    padding: 10px;
+    display: none;
+    gap: 6px;
+    flex-wrap: wrap;
+    width: 124px;
+  }
+  .color-popup.open { display: flex; }
+  .color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.1s, border-color 0.1s;
+    flex-shrink: 0;
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.active { border-color: var(--text); }
+  .act-btn.color { position: relative; }
 
   /* ── Widget body ────────────────────────────────────────────────────── */
   .widget-body {
