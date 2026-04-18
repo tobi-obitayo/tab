@@ -916,6 +916,14 @@
     padding: 0 2px;
   }
 
+  .sp-version {
+    font-size: 11px;
+    color: rgba(232,234,237,0.3);
+    padding: 4px 2px 0;
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
   .sp-section { display: flex; flex-direction: column; gap: 6px; }
 
   .sp-section-label {
@@ -1333,18 +1341,6 @@
         <circle cx="5"  cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/><circle cx="19" cy="19" r="1.8"/>
       </svg>
     </button>
-    <button id="btn-theme" class="gc-apps" title="Toggle dark mode" aria-label="Toggle dark mode">
-      <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
 
     <div id="avatar" title="Profile">T</div>
 
@@ -1462,6 +1458,16 @@
       <span class="sp-toggle"><input type="checkbox" id="tog-avatar" checked><span class="sp-toggle-track"></span></span>
     </label>
   </div>
+
+  <div class="sp-section">
+    <div class="sp-section-label">Appearance</div>
+    <label class="sp-toggle-row">
+      <span>Dark mode</span>
+      <span class="sp-toggle"><input type="checkbox" id="tog-dark"><span class="sp-toggle-track"></span></span>
+    </label>
+  </div>
+
+  <div class="sp-version">v0.1.0</div>
 </div>
 
 <!-- ── Profile panel ──────────────────────────────────────────────────────── -->

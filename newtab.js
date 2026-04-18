@@ -1081,22 +1081,18 @@ settingsPanel.addEventListener('click', e => e.stopPropagation());
 // =============================================================================
 
 (function() {
-  const btn      = document.getElementById('btn-theme');
-  const iconSun  = document.getElementById('icon-sun');
-  const iconMoon = document.getElementById('icon-moon');
-
   function applyTheme(dark) {
     document.body.classList.toggle('dark', dark);
-    iconSun.style.display  = dark ? 'none' : '';
-    iconMoon.style.display = dark ? ''     : 'none';
+    const tog = document.getElementById('tog-dark');
+    if (tog) tog.checked = dark;
   }
 
-  // Default: dark (#2a2b2e). Restore from localStorage if explicitly set.
   const stored = localStorage.getItem('theme');
   applyTheme(stored !== null ? stored === 'dark' : true);
 
-  btn.addEventListener('click', () => {
-    const dark = !document.body.classList.contains('dark');
+  document.addEventListener('change', e => {
+    if (e.target.id !== 'tog-dark') return;
+    const dark = e.target.checked;
     applyTheme(dark);
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   });
