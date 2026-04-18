@@ -1187,6 +1187,26 @@ document.querySelectorAll('.em-btn').forEach(btn => {
 });
 
 // =============================================================================
+// GRID TOGGLE
+// =============================================================================
+
+(function() {
+  function applyGrid(on) {
+    document.body.classList.toggle('no-grid', !on);
+    const tog = document.getElementById('tog-grid');
+    if (tog) tog.checked = on;
+  }
+
+  applyGrid(localStorage.getItem('grid') !== '0');
+
+  document.addEventListener('change', e => {
+    if (e.target.id !== 'tog-grid') return;
+    localStorage.setItem('grid', e.target.checked ? '1' : '0');
+    applyGrid(e.target.checked);
+  });
+})();
+
+// =============================================================================
 // TOOLBAR TOGGLES
 // =============================================================================
 

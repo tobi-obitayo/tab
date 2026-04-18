@@ -787,21 +787,15 @@
     height: 100%;
   }
 
-  body.edit-mode #canvas-inner, body.layout-mode #canvas-inner {
+  body.edit-mode #canvas-inner {
     background-image: radial-gradient(circle, rgba(0,0,0,0.13) 1px, transparent 1px);
     background-size: var(--grid) var(--grid);
-  }
-  /* Layout mode: tint the dots indigo to distinguish from edit mode */
-  body.layout-mode #canvas-inner {
-    background-image: radial-gradient(circle, rgba(99,102,241,0.12) 1px, transparent 1px);
   }
   body.dark.edit-mode #canvas-inner {
     background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
     background-size: var(--grid) var(--grid);
   }
-  body.dark.layout-mode #canvas-inner {
-    background-image: radial-gradient(circle, rgba(129,140,248,0.15) 1px, transparent 1px);
-  }
+  body.no-grid #canvas-inner { background-image: none !important; }
 
   /* pan mode: canvas-inner becomes 3000×3000 via JS */
   #canvas-inner.pan-surface {
@@ -1464,6 +1458,10 @@
     <label class="sp-toggle-row">
       <span>Dark mode</span>
       <span class="sp-toggle"><input type="checkbox" id="tog-dark"><span class="sp-toggle-track"></span></span>
+    </label>
+    <label class="sp-toggle-row">
+      <span>Grid in edit mode</span>
+      <span class="sp-toggle"><input type="checkbox" id="tog-grid" checked><span class="sp-toggle-track"></span></span>
     </label>
   </div>
 
