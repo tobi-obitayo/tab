@@ -876,13 +876,46 @@ function addWidget(type) {
   });
 }
 
+// ── Undo toast ────────────────────────────────────────────────────────────
+const undoToast    = document.getElementById('undo-toast');
+const undoToastMsg = document.getElementById('undo-toast-msg');
+const undoToastBtn = document.getElementById('undo-toast-btn');
+let undoTimer      = null;
+let pendingDelete  = null; // { widget, el }
+
+undoToastBtn.addEventListener('click', () => {
+  if (!pendingDelete) return;
+  clearTimeout(undoTimer);
+  const { widget, el } = pendingDelete;
+  state.widgets.push(widget);
+  document.getElementById('canvas').appendChild(el);
+  syncEmptyState();
+  pendingDelete = null;
+  undoToast.classList.remove('visible');
+});
+
+function showUndoToast(label) {
+  undoToastMsg.textContent = `"${label}" deleted`;
+  undoToast.classList.add('visible');
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => {
+    undoToast.classList.remove('visible');
+    if (pendingDelete) {
+      dbDelete(pendingDelete.widget.id);
+      pendingDelete = null;
+    }
+  }, 5000);
+}
+
 function deleteWidget(id) {
-  if (!confirm('Delete this widget?')) return;
+  const widget = state.widgets.find(w => w.id === id);
+  if (!widget) return;
+  const el = document.querySelector(`.widget[data-id="${id}"]`);
   state.widgets = state.widgets.filter(w => w.id !== id);
-  dbDelete(id).then(() => {
-    document.querySelector(`.widget[data-id="${id}"]`)?.remove();
-    syncEmptyState();
-  });
+  el?.remove();
+  syncEmptyState();
+  pendingDelete = { widget, el };
+  showUndoToast(widget.title || widget.type);
 }
 
 // =============================================================================

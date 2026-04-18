@@ -25,7 +25,7 @@
 
   /* ── Dark mode tokens (body.dark class, toggled manually) ──────────── */
   body.dark {
-    --bg:        #3C4043;
+    --bg:        #3c3c3c;
     --text:      #E8E6E1;
     --muted:     #6B6560;
     --border:    rgba(255,255,255,0.08);
@@ -533,7 +533,7 @@
     height: 50px;
     border-radius: 25px;
     border: 1.5px solid transparent;
-    background: color-mix(in srgb, var(--bg) 70%, white);
+    background: color-mix(in srgb, var(--bg) 0%, white);
     box-shadow: var(--shadow), 0 0 0 1px var(--border);
     padding: 0 20px 0 48px;
     font-family: 'Geist', sans-serif;
@@ -587,7 +587,7 @@
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--bg) 60%, white);
+    background: color-mix(in srgb, var(--bg) 10%, white);
     box-shadow: var(--shadow);
     display: flex;
     align-items: center;
@@ -631,7 +631,7 @@
     height: 52px;
     border-radius: 50%;
     border: 1.5px dashed var(--border);
-    background: color-mix(in srgb, var(--bg) 80%, white);
+    background: color-mix(in srgb, var(--bg) 10%, white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1210,6 +1210,43 @@
     opacity: 1;
   }
 
+  /* ── Undo toast ─────────────────────────────────────────────────────── */
+  #undo-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.18s, transform 0.18s;
+    pointer-events: none;
+  }
+  #undo-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  #undo-toast button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+  }
+
   /* ── Inline editors (widgets) ───────────────────────────────────────── */
   .inline-editor {
     display: block;
@@ -1428,6 +1465,7 @@
   </div>
 </div>
 
+<div id="undo-toast"><span id="undo-toast-msg">Widget deleted</span><button id="undo-toast-btn">Undo</button></div>
 <script src="newtab.js"></script>
 
 <button id="btn-hint" aria-label="Edit mode hints" tabindex="-1">ⓘ
