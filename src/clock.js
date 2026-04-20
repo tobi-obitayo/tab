@@ -1,8 +1,9 @@
 const clockEl = document.getElementById('clock');
 
-function updateClock() {
+export function updateClock() {
+  const hour12 = localStorage.getItem('clockFormat') !== '24';
   clockEl.textContent = new Date().toLocaleTimeString('en-US', {
-    hour: 'numeric', minute: '2-digit', hour12: true,
+    hour: 'numeric', minute: '2-digit', hour12,
   });
 }
 

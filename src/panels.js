@@ -123,14 +123,12 @@ export function initProfilePanel() {
 
   profilePanel.addEventListener('click', e => e.stopPropagation());
 
+  document.getElementById('pp-manage').addEventListener('click', () => {
+    window.open('https://myaccount.google.com', '_blank', 'noopener,noreferrer');
+  });
+
   document.getElementById('pp-add-account').addEventListener('click', () => {
-    const name = prompt('Display name:');
-    if (!name || !name.trim()) return;
-    const email = prompt('Email address:');
-    if (!email || !email.trim()) return;
-    localStorage.setItem(PROFILE_KEY, name.trim());
-    localStorage.setItem(EMAIL_KEY,   email.trim());
-    syncProfile();
+    window.open('https://accounts.google.com/AddSession', '_blank', 'noopener,noreferrer');
   });
 
   document.getElementById('pp-signout').addEventListener('click', () => {

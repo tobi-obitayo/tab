@@ -12,30 +12,29 @@ import { makeTitleEditable } from './editor.js';
 const undoToast    = document.getElementById('undo-toast');
 const undoToastMsg = document.getElementById('undo-toast-msg');
 const undoToastBtn = document.getElementById('undo-toast-btn');
-let undoTimer     = null;
-let pendingDelete = null;
+let undoTimer  = null;
+let onUndoFn   = null;
+let onCommitFn = null;
 
 undoToastBtn.addEventListener('click', () => {
-  if (!pendingDelete) return;
+  if (!onUndoFn) return;
   clearTimeout(undoTimer);
-  const { widget, el } = pendingDelete;
-  state.widgets.push(widget);
-  document.getElementById('canvas-inner').appendChild(el);
-  syncEmptyState();
-  pendingDelete = null;
+  onUndoFn();
+  onUndoFn = null; onCommitFn = null;
   undoToast.classList.remove('visible');
 });
 
-export function showUndoToast(label) {
+export function showUndoToast(label, onUndo, onCommit) {
+  if (onCommitFn) { onCommitFn(); }
   undoToastMsg.textContent = `"${label}" deleted`;
   undoToast.classList.add('visible');
   clearTimeout(undoTimer);
+  onUndoFn   = onUndo;
+  onCommitFn = onCommit;
   undoTimer = setTimeout(() => {
     undoToast.classList.remove('visible');
-    if (pendingDelete) {
-      dbDelete(pendingDelete.widget.id);
-      pendingDelete = null;
-    }
+    if (onCommitFn) { onCommitFn(); }
+    onUndoFn = null; onCommitFn = null;
   }, 5000);
 }
 
@@ -60,8 +59,16 @@ export function deleteWidget(id) {
   state.widgets = state.widgets.filter(w => w.id !== id);
   el?.remove();
   syncEmptyState();
-  pendingDelete = { widget, el };
-  showUndoToast(widget.title || widget.type);
+
+  showUndoToast(
+    widget.title || widget.type,
+    () => {
+      state.widgets.push(widget);
+      document.getElementById('canvas-inner').appendChild(el);
+      syncEmptyState();
+    },
+    () => dbDelete(widget.id)
+  );
 }
 
 export function addWidget(type) {

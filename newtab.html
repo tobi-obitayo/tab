@@ -181,9 +181,13 @@
       <span>Grid in edit mode</span>
       <span class="sp-toggle"><input type="checkbox" id="tog-grid" checked><span class="sp-toggle-track"></span></span>
     </label>
+    <label class="sp-toggle-row">
+      <span>24-hour clock</span>
+      <span class="sp-toggle"><input type="checkbox" id="tog-clock24"><span class="sp-toggle-track"></span></span>
+    </label>
   </div>
 
-  <div class="sp-version">v0.2.0</div>
+  <div class="sp-version">v0.2.1</div>
 </div>
 
 <!-- ── Profile panel ──────────────────────────────────────────────────────── -->
@@ -192,7 +196,7 @@
     <div class="pp-avatar-lg" id="pp-avatar-lg">T</div>
     <div class="pp-name" id="pp-name">User</div>
     <div class="pp-email" id="pp-email">user@gmail.com</div>
-    <button class="pp-manage-btn">Manage your Google Account</button>
+    <button class="pp-manage-btn" id="pp-manage">Manage your Google Account</button>
   </div>
   <div class="pp-sep"></div>
   <div class="pp-accounts">
@@ -246,6 +250,16 @@
 </div>
 
 <div id="undo-toast"><span id="undo-toast-msg">Widget deleted</span><button id="undo-toast-btn">Undo</button></div>
+
+<div id="confirm-modal" class="confirm-overlay">
+  <div class="confirm-box">
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirm-cancel">Cancel</button>
+      <button class="confirm-ok" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
 <script type="module" src="src/init.js"></script>
 
 <button id="btn-hint" aria-label="Edit mode hints" tabindex="-1">ⓘ

@@ -17,8 +17,8 @@ export function hostname(url) {
 export function faviconSrc(url) {
   try {
     const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
   } catch {
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=64`;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=128`;
   }
 }

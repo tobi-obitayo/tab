@@ -13,6 +13,10 @@
   --c0: #FDECC8; --c1: #D3E8CC; --c2: #FADADD;
   --c3: #C8DFF5; --c4: #DDD1F0; --c5: #D4EEE2;
   --c6: #FADCC8; --c7: #E8E3DC;
+
+  --s0: #F59E0B; --s1: #22C55E; --s2: #F43F5E;
+  --s3: #3B82F6; --s4: #A855F7; --s5: #10B981;
+  --s6: #F97316; --s7: #A8A29E;
 }
 
 /* ── Dark mode tokens (body.dark class, toggled manually) ──────────── */
@@ -1339,3 +1343,53 @@ body.edit-mode #btn-hint { display: flex; }
   flex: 1;
   min-width: 0;
 }
+
+/* ── Confirm modal ──────────────────────────────────────────────────── */
+.confirm-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-overlay.open { display: flex; }
+.confirm-box {
+  background: #2a2b2e;
+  color: #E8E6E1;
+  border-radius: 12px;
+  padding: 22px 24px;
+  min-width: 280px;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.confirm-box p { font-size: 14px; line-height: 1.5; }
+.confirm-btns { display: flex; gap: 8px; justify-content: flex-end; }
+.confirm-cancel {
+  padding: 7px 16px; border-radius: 8px; border: none;
+  background: rgba(255,255,255,0.08); color: #E8E6E1; cursor: pointer;
+  font-size: 13px; transition: background 0.12s;
+}
+.confirm-cancel:hover { background: rgba(255,255,255,0.14); }
+.confirm-ok {
+  padding: 7px 16px; border-radius: 8px; border: none;
+  background: #dc2626; color: #fff; cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: background 0.12s;
+}
+.confirm-ok:hover { background: #b91c1c; }
+
+/* ── Page delete button ─────────────────────────────────────────────── */
+.page-del {
+  width: 22px; height: 22px;
+  border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);
+  cursor: pointer; font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, color 0.12s;
+  margin-left: 2px;
+}
+.page-del:hover { background: #dc2626; color: #fff; }

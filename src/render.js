@@ -49,7 +49,9 @@ function parseLinks(raw = '') {
     .filter(Boolean)
     .map(l => {
       const [title, url] = l.split('|').map(s => s.trim());
-      return url ? { title, url } : { title: '', url: title };
+      const rawUrl = url || title;
+      const normUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl;
+      return url ? { title, url: normUrl } : { title: '', url: normUrl };
     });
 }
 
@@ -116,8 +118,8 @@ export function createWidgetEl(w) {
   el.style.cssText = `left:${w.x}px; top:${w.y}px; width:${w.w}px; height:${w.h}px; z-index:${w.z || 0};`;
   el.style.setProperty('--wc', w.color);
 
-  const swatches = PALETTE.map(c =>
-    `<span class="color-swatch${w.color === c ? ' active' : ''}" data-color="${c}" style="background:${c}"></span>`
+  const swatches = PALETTE.map((c, i) =>
+    `<span class="color-swatch${w.color === c ? ' active' : ''}" data-color="${c}" style="background:var(--s${i})"></span>`
   ).join('');
 
   el.innerHTML = `
@@ -186,6 +188,7 @@ export function createWidgetEl(w) {
 
   el.addEventListener('click', e => {
     if (state.layoutMode) return;
+    if (e.target.closest('a')) return;
 
     if (config.editModeModel === 'b') {
       if (e.target.closest('.widget-title') && !el.querySelector('.inline-title-input')) {
@@ -223,6 +226,16 @@ export function createWidgetEl(w) {
 
   if (w.type === 'task') wireTaskCheckboxes(el, w);
 
+  if (w.type === 'link') {
+    el.querySelectorAll('a.link-item').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open(a.href, '_blank', 'noopener,noreferrer');
+      });
+    });
+  }
+
   attachDrag(el);
   attachResize(el);
 
@@ -237,4 +250,13 @@ export function patchWidgetEl(w) {
   const body = el.querySelector('.widget-body');
   body.innerHTML = renderBody(w);
   if (w.type === 'task') wireTaskCheckboxes(el, w);
+  if (w.type === 'link') {
+    body.querySelectorAll('a.link-item').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open(a.href, '_blank', 'noopener,noreferrer');
+      });
+    });
+  }
 }

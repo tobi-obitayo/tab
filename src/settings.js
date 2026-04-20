@@ -1,4 +1,5 @@
 import { state, config } from './state.js';
+import { updateClock } from './clock.js';
 
 const btnEdit   = document.getElementById('btn-edit');
 const btnLayout = document.getElementById('btn-layout');
@@ -114,5 +115,17 @@ export function initGrid() {
     if (e.target.id !== 'tog-grid') return;
     localStorage.setItem('grid', e.target.checked ? '1' : '0');
     applyGrid(e.target.checked);
+  });
+}
+
+// ── Clock format ──────────────────────────────────────────────────────────
+
+export function initClockFormat() {
+  const tog = document.getElementById('tog-clock24');
+  if (!tog) return;
+  tog.checked = localStorage.getItem('clockFormat') === '24';
+  tog.addEventListener('change', () => {
+    localStorage.setItem('clockFormat', tog.checked ? '24' : '12');
+    updateClock();
   });
 }
