@@ -11,6 +11,13 @@ import { setEditMode } from './settings.js';
 const canvasInner = document.getElementById('canvas-inner');
 const emptyEl     = document.getElementById('empty');
 
+const swIntervals = new Map(); // widgetId → intervalId
+
+export function clearStopwatchIntervals() {
+  swIntervals.forEach(id => clearInterval(id));
+  swIntervals.clear();
+}
+
 export function visibleWidgets() {
   if (config.viewportModel === 'pages')
     return state.widgets.filter(w => (w.page ?? 0) === state.currentPage);
@@ -18,6 +25,7 @@ export function visibleWidgets() {
 }
 
 export function renderAll() {
+  clearStopwatchIntervals();
   canvasInner.querySelectorAll('.widget').forEach(el => el.remove());
   visibleWidgets().forEach(createWidgetEl);
   syncEmptyState();
@@ -55,6 +63,29 @@ function parseLinks(raw = '') {
     });
 }
 
+function parseStopwatch(raw) {
+  try {
+    const s = JSON.parse(raw || '{}');
+    return {
+      elapsed:   typeof s.elapsed   === 'number'  ? s.elapsed   : 0,
+      running:   typeof s.running   === 'boolean'  ? s.running   : false,
+      startedAt: typeof s.startedAt === 'number'   ? s.startedAt : null,
+    };
+  } catch {
+    return { elapsed: 0, running: false, startedAt: null };
+  }
+}
+
+function formatStopwatch(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const h  = Math.floor(totalSec / 3600);
+  const m  = Math.floor((totalSec % 3600) / 60);
+  const s  = totalSec % 60;
+  const mm = String(m).padStart(2, '0');
+  const ss = String(s).padStart(2, '0');
+  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+
 // ── Widget body renderer ──────────────────────────────────────────────────
 
 export function renderBody(w) {
@@ -62,7 +93,8 @@ export function renderBody(w) {
     case 'note': {
       if (!w.content?.trim())
         return '<span class="widget-empty">empty note — click to edit</span>';
-      return marked.parse(w.content);
+      const raw = marked.parse(w.content);
+      return raw.replace(/\bon\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '');
     }
     case 'task': {
       const tasks = parseTasks(w.content);
@@ -89,6 +121,19 @@ export function renderBody(w) {
         </a>
       `).join('');
     }
+    case 'stopwatch': {
+      const sw = parseStopwatch(w.content);
+      const currentMs = sw.running && sw.startedAt !== null
+        ? sw.elapsed + (Date.now() - sw.startedAt)
+        : sw.elapsed;
+      return `
+        <div class="sw-display">${formatStopwatch(currentMs)}</div>
+        <div class="sw-controls">
+          <button class="sw-btn sw-start">${sw.running ? 'Pause' : 'Start'}</button>
+          <button class="sw-btn sw-reset">Reset</button>
+        </div>
+      `;
+    }
   }
   return '';
 }
@@ -105,6 +150,57 @@ export function wireTaskCheckboxes(widgetEl, widget) {
         cb.closest('.task-item').classList.toggle('done', cb.checked);
       }
     });
+  });
+}
+
+function startSwInterval(id, w) {
+  if (swIntervals.has(id)) return;
+  const intervalId = setInterval(() => {
+    const dispEl = document.querySelector(`.widget[data-id="${id}"] .sw-display`);
+    if (!dispEl) { clearInterval(intervalId); swIntervals.delete(id); return; }
+    const sw = parseStopwatch(w.content);
+    if (!sw.running || sw.startedAt === null) { clearInterval(intervalId); swIntervals.delete(id); return; }
+    dispEl.textContent = formatStopwatch(sw.elapsed + (Date.now() - sw.startedAt));
+  }, 100);
+  swIntervals.set(id, intervalId);
+}
+
+function wireStopwatch(el, w) {
+  const startBtn = el.querySelector('.sw-start');
+  const resetBtn = el.querySelector('.sw-reset');
+  const display  = el.querySelector('.sw-display');
+
+  const sw = parseStopwatch(w.content);
+  if (sw.running) startSwInterval(w.id, w);
+
+  startBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const now     = Date.now();
+    const current = parseStopwatch(w.content);
+    if (current.running) {
+      const accumulated = current.elapsed + (now - (current.startedAt || now));
+      w.content = JSON.stringify({ elapsed: accumulated, running: false, startedAt: null });
+      dbSave(w);
+      clearInterval(swIntervals.get(w.id));
+      swIntervals.delete(w.id);
+      display.textContent  = formatStopwatch(accumulated);
+      startBtn.textContent = 'Start';
+    } else {
+      w.content = JSON.stringify({ elapsed: current.elapsed, running: true, startedAt: now });
+      dbSave(w);
+      startBtn.textContent = 'Pause';
+      startSwInterval(w.id, w);
+    }
+  });
+
+  resetBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    clearInterval(swIntervals.get(w.id));
+    swIntervals.delete(w.id);
+    w.content = JSON.stringify({ elapsed: 0, running: false, startedAt: null });
+    dbSave(w);
+    display.textContent  = formatStopwatch(0);
+    startBtn.textContent = 'Start';
   });
 }
 
@@ -224,7 +320,8 @@ export function createWidgetEl(w) {
     if (config.editModeModel === 'a' && !state.editMode) setEditMode(true);
   });
 
-  if (w.type === 'task') wireTaskCheckboxes(el, w);
+  if (w.type === 'task')      wireTaskCheckboxes(el, w);
+  if (w.type === 'stopwatch') wireStopwatch(el, w);
 
   if (w.type === 'link') {
     el.querySelectorAll('a.link-item').forEach(a => {

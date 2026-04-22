@@ -1205,6 +1205,38 @@ body.edit-mode .widget-actions { display: flex; }
 .link-host       { font-size: 10px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 .widget-empty    { font-size: 11px; color: color-mix(in srgb, var(--text) 30%, transparent); font-style: italic; }
 
+/* ── Stopwatch widget ───────────────────────────────────────────────── */
+.sw-display {
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-align: center;
+  padding: 10px 0 8px;
+  line-height: 1;
+  user-select: none;
+}
+.sw-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.sw-btn {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 14px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  color: var(--text);
+  transition: background 0.12s;
+  user-select: none;
+}
+.sw-btn:hover  { background: color-mix(in srgb, var(--text) 12%, transparent); }
+.sw-btn:active { transform: scale(0.96); }
+
 /* ── Resize handle ──────────────────────────────────────────────────── */
 .resize-handle {
   position: absolute;

@@ -84,11 +84,15 @@ export function addWidget(type) {
   const cx  = config.viewportModel === 'pan' ? vcx - pan.x : vcx;
   const cy  = config.viewportModel === 'pan' ? vcy - pan.y : 40;
 
+  const content = type === 'stopwatch'
+    ? JSON.stringify({ elapsed: 0, running: false, startedAt: null })
+    : '';
+
   const w = {
     id:      crypto.randomUUID(),
     type,
-    title:   { note: 'New Note', task: 'New Tasks', link: 'New Links' }[type],
-    content: '',
+    title:   { note: 'New Note', task: 'New Tasks', link: 'New Links', stopwatch: 'Stopwatch' }[type],
+    content,
     x: snap(cx - def.w / 2 + offset),
     y: snap(cy + offset),
     w: def.w,
@@ -104,6 +108,6 @@ export function addWidget(type) {
     const el = createWidgetEl(w);
     syncEmptyState();
     setEditMode(true);
-    makeTitleEditable(el, w);
+    if (w.type !== 'stopwatch') makeTitleEditable(el, w);
   });
 }

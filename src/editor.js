@@ -30,6 +30,7 @@ export function makeTitleEditable(el, w) {
 }
 
 export function makeBodyEditable(el, w) {
+  if (w.type === 'stopwatch') return;
   const body = el.querySelector('.widget-body');
   if (!body || body.querySelector('.inline-editor')) return;
 

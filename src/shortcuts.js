@@ -2,6 +2,13 @@ import { state } from './state.js';
 import { dbSaveShortcut, dbDeleteShortcut } from './db.js';
 import { esc, faviconSrc } from './utils.js';
 
+function isSafeUrl(url) {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch { return false; }
+}
+
 const shortcutsEl = document.getElementById('shortcuts');
 
 export function renderShortcuts() {
@@ -87,8 +94,11 @@ function editShortcut(sc) {
   const tryCommit = () => {
     setTimeout(() => {
       if (cancelled || el.contains(document.activeElement)) return;
+      const rawUrl  = urlIn.value.trim() || sc.url;
+      const normUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl;
+      if (!isSafeUrl(normUrl)) { patchShortcutEl(sc); return; }
       sc.label = nameIn.value.trim() || sc.label;
-      sc.url   = urlIn.value.trim()  || sc.url;
+      sc.url   = normUrl;
       dbSaveShortcut(sc).then(() => patchShortcutEl(sc));
     }, 120);
   };
@@ -174,6 +184,11 @@ function confirmAddShortcut() {
     return;
   }
   if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if (!isSafeUrl(url)) {
+    popUrl.style.borderColor = '#DC2626';
+    setTimeout(() => popUrl.style.borderColor = '', 2000);
+    return;
+  }
   const sc = { id: Date.now(), label, url };
   state.shortcuts.push(sc);
   dbSaveShortcut(sc).then(() => renderShortcuts());

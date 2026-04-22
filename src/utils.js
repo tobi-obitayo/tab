@@ -1,4 +1,4 @@
-import { GRID } from './constants.js';
+import { GRID, ICON_OVERRIDES } from './constants.js';
 
 export function snap(n) { return Math.round(n / GRID) * GRID; }
 
@@ -16,8 +16,9 @@ export function hostname(url) {
 
 export function faviconSrc(url) {
   try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+    const host = new URL(url).hostname;
+    if (ICON_OVERRIDES[host]) return ICON_OVERRIDES[host];
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`;
   } catch {
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=128`;
   }

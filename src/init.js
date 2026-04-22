@@ -11,7 +11,12 @@ import { initClock } from './clock.js';
 import { attachChromeDrag } from './drag.js';
 import { addWidget } from './widgets.js';
 
-marked.use({ breaks: true });
+marked.use({
+  breaks: true,
+  renderer: {
+    html() { return ''; }, // drop raw HTML blocks — prevents <script> and inline HTML injection
+  },
+});
 
 async function init() {
   await initDB();
