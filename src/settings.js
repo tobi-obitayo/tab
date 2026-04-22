@@ -87,6 +87,7 @@ export function initTheme() {
     document.body.classList.toggle('dark', dark);
     const tog = document.getElementById('tog-dark');
     if (tog) tog.checked = dark;
+    document.getElementById('tab-preload')?.remove();
   }
 
   const stored = localStorage.getItem('theme');

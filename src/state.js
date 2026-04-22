@@ -35,6 +35,6 @@ export function applyLayout(layout) {
   };
   for (const [key, el] of Object.entries(map)) {
     const pos = layout[key];
-    if (pos) { el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px'; }
+    if (pos) { el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px'; el.style.visibility = 'visible'; }
   }
 }

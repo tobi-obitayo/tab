@@ -5,11 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>New Tab</title>
 <link rel="icon" href="icons/icon128.png">
+<script>
+(function(){
+  var dark = localStorage.getItem('theme') !== 'light';
+  var css = dark
+    ? 'body{background-color:#3c3c3c!important;color:#E8E6E1!important;transition:none!important}'
+    : 'body{transition:none!important}';
+  [['toolbar-gmail','gc-gmail'],['toolbar-images','gc-images'],['toolbar-apps','btn-apps'],['toolbar-avatar','avatar']]
+    .forEach(function(t){ if(localStorage.getItem(t[0])==='0') css+='#'+t[1]+'{display:none}'; });
+  var s=document.createElement('style'); s.id='tab-preload'; s.textContent=css; document.head.appendChild(s);
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="marked.min.js"></script>
 </head>
-<body>
+<body class="dark">
 
 <!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
 <nav id="toolbar">

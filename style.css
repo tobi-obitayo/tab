@@ -473,6 +473,7 @@ body.layout-mode .layout-indicator { display: block; }
 .chrome-block {
   position: absolute;
   z-index: 100;
+  visibility: hidden;
 }
 body.edit-mode .chrome-block { z-index: 5; }
 
