@@ -8,6 +8,7 @@ import { bringToFront, deleteWidget } from './widgets.js';
 import { makeTitleEditable, makeBodyEditable } from './editor.js';
 import { setEditMode } from './settings.js';
 
+const canvas      = document.getElementById('canvas');
 const canvasInner = document.getElementById('canvas-inner');
 const emptyEl     = document.getElementById('empty');
 
@@ -253,7 +254,9 @@ export function createWidgetEl(w) {
   el.className = 'widget';
   el.dataset.id   = w.id;
   el.dataset.type = w.type;
-  el.style.cssText = `left:${w.x}px; top:${w.y}px; width:${w.w}px; height:${w.h}px; z-index:${w.z || 0};`;
+  const panOffX = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetWidth  / 2) : 0;
+  const panOffY = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetHeight / 2) : 0;
+  el.style.cssText = `left:${w.x + panOffX}px; top:${w.y + panOffY}px; width:${w.w}px; height:${w.h}px; z-index:${w.z || 0};`;
   el.style.setProperty('--wc', w.color);
 
   const swatches = PALETTE.map((c, i) =>
@@ -264,6 +267,7 @@ export function createWidgetEl(w) {
     <div class="widget-header">
       <span class="drag-handle" title="Drag to move">⠿</span>
       <span class="widget-title">${esc(w.title || 'Untitled')}</span>
+      <button class="act-btn widget-kebab" title="Options">⋮</button>
       <div class="widget-actions">
         <button class="act-btn color" title="Color">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -284,6 +288,14 @@ export function createWidgetEl(w) {
     <div class="resize-handle"></div>
   `;
 
+  el.querySelector('.widget-kebab').addEventListener('click', e => {
+    e.stopPropagation();
+    document.querySelectorAll('.widget.actions-open').forEach(w => {
+      if (w !== el) w.classList.remove('actions-open');
+    });
+    el.classList.toggle('actions-open');
+  });
+
   el.querySelector('.act-btn.color').addEventListener('click', e => {
     e.stopPropagation();
     const popup = el.querySelector('.color-popup');
@@ -301,6 +313,7 @@ export function createWidgetEl(w) {
     el.style.setProperty('--wc', color);
     el.querySelectorAll('.color-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
     el.querySelector('.color-popup').classList.remove('open');
+    el.classList.remove('actions-open');
     dbSave(w);
   });
 

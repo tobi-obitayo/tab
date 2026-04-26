@@ -8,7 +8,8 @@ export const DEFAULTS = {
   note:      { w: 280, h: 220 },
   task:      { w: 240, h: 200 },
   link:      { w: 260, h: 180 },
-  stopwatch: { w: 220, h: 140 },
+  stopwatch: { w: 220, h: 180 },
+  weather:   { w: 280, h: 180 },
 };
 
 export const ICON_OVERRIDES = {

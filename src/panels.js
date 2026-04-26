@@ -39,6 +39,8 @@ export function initAppsPanel() {
 
   btnApps.addEventListener('click', e => {
     e.stopPropagation();
+    document.getElementById('settings-panel').classList.remove('open');
+    document.getElementById('btn-settings').classList.remove('panel-open');
     const isOpen = appsPanel.classList.toggle('open');
     btnApps.classList.toggle('panel-open', isOpen);
   });

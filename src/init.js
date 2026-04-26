@@ -4,7 +4,7 @@ import { DEFAULT_SHORTCUTS } from './constants.js';
 import { snap } from './utils.js';
 import { renderAll } from './render.js';
 import { renderShortcuts } from './shortcuts.js';
-import { setupViewportModel, setViewportModel } from './viewport.js';
+import { setupViewportModel, setViewportModel, clampWidgetsToCanvas } from './viewport.js';
 import { initEditMode, initToolbarToggles, initTheme, initGrid, initClockFormat, initWeatherUnit, setEditModeModel } from './settings.js';
 import { initAppsPanel, initSettingsPanel, initProfilePanel } from './panels.js';
 import { initClock } from './clock.js';
@@ -110,8 +110,12 @@ async function init() {
   document.addEventListener('click', () =>
     document.querySelectorAll('.color-popup.open').forEach(p => p.classList.remove('open'))
   );
+  document.addEventListener('click', () =>
+    document.querySelectorAll('.widget.actions-open').forEach(w => w.classList.remove('actions-open'))
+  );
 
   renderAll();
+  clampWidgetsToCanvas();
 }
 
 init().catch(err => console.error('[newtab] init failed:', err));

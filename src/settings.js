@@ -40,12 +40,14 @@ export function setEditModeModel(model) {
   config.editModeModel = model;
   localStorage.setItem('editModeModel', model);
   btnEdit.style.display = model === 'b' ? 'none' : '';
+  document.body.classList.toggle('edit-mode-b', model === 'b');
   if (model !== 'b') setEditMode(false);
   syncEmButtons();
 }
 
 export function initEditMode() {
   btnEdit.style.display = config.editModeModel === 'b' ? 'none' : '';
+  document.body.classList.toggle('edit-mode-b', config.editModeModel === 'b');
   syncEmButtons();
   btnEdit.addEventListener('click',   () => setEditMode(!state.editMode));
   btnLayout.addEventListener('click', () => setLayoutMode(!state.layoutMode));

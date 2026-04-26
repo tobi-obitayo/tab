@@ -1,9 +1,38 @@
 import { state, config, pan, layoutState } from './state.js';
-import { dbSaveLayout, dbDelete } from './db.js';
+import { dbSave, dbSaveLayout, dbDelete } from './db.js';
 import { renderAll } from './render.js';
 import { showUndoToast } from './widgets.js';
+import { snap } from './utils.js';
 
+const canvas      = document.getElementById('canvas');
 const canvasInner = document.getElementById('canvas-inner');
+
+// ── Clamp widgets to visible area on resize ───────────────────────────────
+
+export function clampWidgetsToCanvas() {
+  if (config.viewportModel !== 'clamp') return;
+  const W = canvasInner.offsetWidth;
+  const H = canvasInner.offsetHeight;
+  state.widgets.forEach(w => {
+    const el = document.querySelector(`.widget[data-id="${w.id}"]`);
+    if (!el) return;
+    const newX = snap(Math.max(0, Math.min(w.x, W - el.offsetWidth)));
+    const newY = snap(Math.max(0, Math.min(w.y, H - el.offsetHeight)));
+    if (newX !== w.x || newY !== w.y) {
+      w.x = newX;
+      w.y = newY;
+      el.style.left = w.x + 'px';
+      el.style.top  = w.y + 'px';
+      dbSave(w);
+    }
+  });
+}
+
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(clampWidgetsToCanvas, 200);
+});
 
 export function syncVmButtons() {
   document.querySelectorAll('.vm-btn').forEach(b => {
@@ -11,9 +40,27 @@ export function syncVmButtons() {
   });
 }
 
+export function panOffset() {
+  return {
+    x: Math.round(1500 - canvas.offsetWidth  / 2),
+    y: Math.round(1500 - canvas.offsetHeight / 2),
+  };
+}
+
 export function setupViewportModel() {
   if (config.viewportModel === 'pan') {
     canvasInner.classList.add('pan-surface');
+    const off = panOffset();
+    pan.x = -off.x;
+    pan.y = -off.y;
+    canvasInner.style.transform = `translate(${pan.x}px,${pan.y}px)`;
+    // Offset chrome elements so they appear at the same visual position as clamp mode
+    ['clock', 'search', 'shortcuts'].forEach(key => {
+      const el = document.getElementById(`chrome-${key}`);
+      if (!el || !layoutState || !layoutState[key]) return;
+      el.style.left = (layoutState[key].x + off.x) + 'px';
+      el.style.top  = (layoutState[key].y + off.y) + 'px';
+    });
   }
   if (config.viewportModel === 'pages') {
     document.getElementById('page-switcher').style.display = 'flex';
@@ -30,6 +77,13 @@ export function teardownViewportModel() {
     pan.active = false; pan.spaceDown = false;
     document.body.classList.remove('space-held', 'panning');
     document.getElementById('pan-indicator').style.display = 'none';
+    // Restore chrome elements to their saved clamp-mode positions
+    ['clock', 'search', 'shortcuts'].forEach(key => {
+      const el = document.getElementById(`chrome-${key}`);
+      if (!el || !layoutState || !layoutState[key]) return;
+      el.style.left = layoutState[key].x + 'px';
+      el.style.top  = layoutState[key].y + 'px';
+    });
   }
   if (config.viewportModel === 'pages') {
     document.getElementById('page-switcher').style.display = 'none';
@@ -43,6 +97,7 @@ export function setViewportModel(mode) {
   localStorage.setItem('viewportModel', mode);
   setupViewportModel();
   renderAll();
+  clampWidgetsToCanvas();
 }
 
 // ── Pages ─────────────────────────────────────────────────────────────────

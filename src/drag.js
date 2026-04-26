@@ -65,7 +65,10 @@ document.addEventListener('mousemove', e => {
     pan.y = Math.min(0, Math.max(canvas.offsetHeight - 3000, pan.originY + (e.clientY - pan.startY)));
     canvasInner.style.transform = `translate(${pan.x}px,${pan.y}px)`;
     const panIndicator = document.getElementById('pan-indicator');
-    panIndicator.textContent = `${-pan.x | 0}, ${-pan.y | 0}`;
+    // Indicator shows 0,0 at the centered origin (canvas 1500,1500)
+    const indX = (canvas.offsetWidth  / 2 - 1500 - pan.x) | 0;
+    const indY = (canvas.offsetHeight / 2 - 1500 - pan.y) | 0;
+    panIndicator.textContent = `${indX}, ${indY}`;
     panIndicator.style.display = 'block';
     return;
   }
@@ -117,13 +120,17 @@ document.addEventListener('mouseup', () => {
   dragging.style.top  = snappedY + 'px';
   dragging.classList.remove('dragging');
 
+  // In pan mode, canvas positions include the centering offset; strip it before saving
+  const saveOffX = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetWidth  / 2) : 0;
+  const saveOffY = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetHeight / 2) : 0;
+
   const chromeKey = dragging.dataset.chromeKey;
   if (chromeKey) {
-    layoutState[chromeKey] = { x: snappedX, y: snappedY };
+    layoutState[chromeKey] = { x: snappedX - saveOffX, y: snappedY - saveOffY };
     dbSaveLayout(layoutState);
   } else {
     const w = state.widgets.find(w => w.id === dragging.dataset.id);
-    if (w) { w.x = snappedX; w.y = snappedY; dbSave(w); }
+    if (w) { w.x = snappedX - saveOffX; w.y = snappedY - saveOffY; dbSave(w); }
   }
   dragging = null;
 });

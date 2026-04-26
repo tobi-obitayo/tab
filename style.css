@@ -1086,6 +1086,15 @@ body.edit-mode .widget-header   { cursor: grab; }
 .widget-actions { display: none; gap: 4px; flex-shrink: 0; }
 body.edit-mode .widget-actions { display: flex; }
 
+/* ── Direct manipulation mode (model b) ────────────────────────────── */
+.widget-kebab { display: none; }
+body.edit-mode-b .widget-kebab { display: flex; }
+body.edit-mode-b .drag-handle { display: block; }
+body.edit-mode-b .widget-header { cursor: grab; }
+body.edit-mode-b .widget.dragging .widget-header { cursor: grabbing; }
+body.edit-mode-b .resize-handle { display: block; }
+body.edit-mode-b .widget.actions-open .widget-actions { display: flex; }
+
 .act-btn {
   border: none;
   background: rgba(0,0,0,0.06);
