@@ -71,6 +71,15 @@ export function deleteWidget(id) {
   );
 }
 
+function chromeBottom() {
+  let max = 0;
+  document.querySelectorAll('.chrome-block').forEach(b => {
+    const bottom = b.offsetTop + b.offsetHeight;
+    if (bottom > max) max = bottom;
+  });
+  return max;
+}
+
 export function addWidget(type) {
   const color  = PALETTE[state.colorCursor % PALETTE.length];
   state.colorCursor++;
@@ -79,10 +88,10 @@ export function addWidget(type) {
   const vis    = visibleWidgets();
   const offset = vis.length * 20; // GRID
 
-  const vcx = Math.round(window.innerWidth  / 2);
-  const vcy = Math.round((window.innerHeight - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--toolbar-h')) || 52) / 2);
-  const cx  = config.viewportModel === 'pan' ? vcx - pan.x : vcx;
-  const cy  = config.viewportModel === 'pan' ? vcy - pan.y : 40;
+  const vcx    = Math.round(window.innerWidth / 2);
+  const cx     = config.viewportModel === 'pan' ? vcx - pan.x : vcx;
+  const bottom = chromeBottom();
+  const cy     = bottom > 0 ? bottom + 40 : 40;
 
   const content = type === 'stopwatch'
     ? JSON.stringify({ elapsed: 0, running: false, startedAt: null })

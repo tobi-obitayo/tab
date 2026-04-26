@@ -138,6 +138,7 @@ export function renderBody(w) {
       return `
         <div class="weather-display">
           <div class="weather-data">fetching location…</div>
+          <div class="weather-city"></div>
         </div>
       `;
     }
@@ -179,19 +180,28 @@ function getCoords() {
 }
 
 async function wireWeather(el, w) {
-  const display = el.querySelector('.weather-data');
+  const display  = el.querySelector('.weather-data');
+  const cityEl   = el.querySelector('.weather-city');
   try {
     const position = await getCoords();
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const tempC = data.current_weather.temperature;
+
+    const [weatherRes, geoRes] = await Promise.all([
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`),
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`),
+    ]);
+    const [weatherData, geoData] = await Promise.all([weatherRes.json(), geoRes.json()]);
+
+    const tempC = weatherData.current_weather.temperature;
     display.dataset.tempC = tempC;
     const unit = localStorage.getItem('weatherUnit') || 'C';
     const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
     if (display) display.textContent = `${val}°${unit}`;
+
+    const addr = geoData.address || {};
+    const city = addr.city || addr.town || addr.village || addr.county || '';
+    if (cityEl && city) cityEl.textContent = city;
   } catch {
     if (display) display.textContent = 'unavailable';
   }
