@@ -5,7 +5,7 @@ import { snap } from './utils.js';
 import { renderAll } from './render.js';
 import { renderShortcuts } from './shortcuts.js';
 import { setupViewportModel, setViewportModel } from './viewport.js';
-import { initEditMode, initToolbarToggles, initTheme, initGrid, initClockFormat, setEditModeModel } from './settings.js';
+import { initEditMode, initToolbarToggles, initTheme, initGrid, initClockFormat, initWeatherUnit, setEditModeModel } from './settings.js';
 import { initAppsPanel, initSettingsPanel, initProfilePanel } from './panels.js';
 import { initClock } from './clock.js';
 import { attachChromeDrag } from './drag.js';
@@ -79,6 +79,7 @@ async function init() {
   initTheme();
   initGrid();
   initClockFormat();
+  initWeatherUnit();
   initAppsPanel();
   initSettingsPanel();
   initProfilePanel();

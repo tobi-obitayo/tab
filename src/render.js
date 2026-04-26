@@ -138,7 +138,6 @@ export function renderBody(w) {
       return `
         <div class="weather-display">
           <div class="weather-data">fetching location…</div>
-          <button class="weather-toggle">°C / °F</button>
         </div>
       `;
     }
@@ -181,16 +180,6 @@ function getCoords() {
 
 async function wireWeather(el, w) {
   const display = el.querySelector('.weather-data');
-  const toggle  = el.querySelector('.weather-toggle');
-
-  if (toggle) toggle.addEventListener('click', e => {
-    e.stopPropagation();
-    if (display.dataset.tempC === undefined) return;
-    w.unit = (w.unit === 'F') ? 'C' : 'F';
-    dbSave(w);
-    showTemp(display, toggle, parseFloat(display.dataset.tempC), w.unit);
-  });
-
   try {
     const position = await getCoords();
     const lat = position.coords.latitude;
@@ -200,16 +189,12 @@ async function wireWeather(el, w) {
     const data = await response.json();
     const tempC = data.current_weather.temperature;
     display.dataset.tempC = tempC;
-    showTemp(display, toggle, tempC, w.unit || 'C');
+    const unit = localStorage.getItem('weatherUnit') || 'C';
+    const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
+    if (display) display.textContent = `${val}°${unit}`;
   } catch {
     if (display) display.textContent = 'unavailable';
   }
-}
-
-function showTemp(display, toggle, tempC, unit) {
-  const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
-  display.textContent = `${val}°${unit}`;
-  if (toggle) toggle.textContent = unit === 'F' ? '→ °C' : '→ °F';
 }
 
 function wireStopwatch(el, w) {
@@ -271,20 +256,17 @@ export function createWidgetEl(w) {
       <span class="widget-title">${esc(w.title || 'Untitled')}</span>
       <div class="widget-actions">
         <button class="act-btn color" title="Color">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
             <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2a10 10 0 0 1 0 20"/>
-            <path d="M2 12h20"/>
+            <line x1="12" y1="2" x2="12" y2="12"/>
+            <line x1="20.66" y1="7" x2="12" y2="12"/>
+            <line x1="20.66" y1="17" x2="12" y2="12"/>
+            <line x1="12" y1="22" x2="12" y2="12"/>
+            <line x1="3.34" y1="17" x2="12" y2="12"/>
+            <line x1="3.34" y1="7" x2="12" y2="12"/>
           </svg>
           <div class="color-popup">${swatches}</div>
         </button>
-        <button class="act-btn front" title="Bring to front">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="5" width="9" height="9" rx="1.5"/>
-            <path d="M2 11V3a1.5 1.5 0 0 1 1.5-1.5H11" opacity="0.45"/>
-          </svg>
-        </button>
-        <button class="act-btn edit" title="Edit">✎</button>
         <button class="act-btn del"  title="Delete">✕</button>
       </div>
     </div>
@@ -312,17 +294,6 @@ export function createWidgetEl(w) {
     dbSave(w);
   });
 
-  el.querySelector('.act-btn.front').addEventListener('click', e => {
-    e.stopPropagation();
-    bringToFront(w.id);
-  });
-
-  el.querySelector('.act-btn.edit').addEventListener('click', e => {
-    e.stopPropagation();
-    if (w.type === 'weather') return;
-    if (config.editModeModel === 'b' || state.editMode) makeBodyEditable(el, w);
-  });
-
   el.querySelector('.act-btn.del').addEventListener('click', e => {
     e.stopPropagation();
     deleteWidget(w.id);
@@ -342,8 +313,7 @@ export function createWidgetEl(w) {
       if (bodyEl && !el.querySelector('.inline-editor')) {
         if (e.target.tagName === 'INPUT') return;
         if (w.type === 'weather') return;
-        e.stopPropagation(); makeBodyEditable(el, w);
-      }
+        e.stopPropagation(); makeBodyEditable(el, w);      }
       return;
     }
 
@@ -361,8 +331,7 @@ export function createWidgetEl(w) {
     if (bodyEl && !el.querySelector('.inline-editor')) {
       if (e.target.tagName === 'INPUT') return;
       if (w.type === 'weather') return;
-      e.stopPropagation();
-      makeBodyEditable(el, w);
+      e.stopPropagation(); makeBodyEditable(el, w);
     }
   });
 

@@ -1,4 +1,5 @@
-import { state, config } from './state.js';
+import { state, config, layoutState } from './state.js';
+import { dbSaveLayout } from './db.js';
 import { updateClock } from './clock.js';
 
 const btnEdit   = document.getElementById('btn-edit');
@@ -126,7 +127,36 @@ export function initClockFormat() {
   if (!tog) return;
   tog.checked = localStorage.getItem('clockFormat') === '24';
   tog.addEventListener('change', () => {
+    const clockBlock = document.getElementById('chrome-clock');
+    const oldCenter = clockBlock ? clockBlock.offsetLeft + clockBlock.offsetWidth / 2 : null;
     localStorage.setItem('clockFormat', tog.checked ? '24' : '12');
     updateClock();
+    if (oldCenter !== null && clockBlock) {
+      requestAnimationFrame(() => {
+        const newLeft = Math.round(oldCenter - clockBlock.offsetWidth / 2);
+        clockBlock.style.left = newLeft + 'px';
+        if (layoutState.clock) {
+          layoutState.clock.x = newLeft;
+          dbSaveLayout(layoutState);
+        }
+      });
+    }
+  });
+}
+
+export function initWeatherUnit() {
+  const tog = document.getElementById('tog-weather-f');
+  if (!tog) return;
+  tog.checked = localStorage.getItem('weatherUnit') === 'F';
+  tog.addEventListener('change', () => {
+    const unit = tog.checked ? 'F' : 'C';
+    localStorage.setItem('weatherUnit', unit);
+    document.querySelectorAll('.widget[data-type="weather"]').forEach(el => {
+      const display = el.querySelector('.weather-data');
+      if (!display || display.dataset.tempC === undefined) return;
+      const tempC = parseFloat(display.dataset.tempC);
+      const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
+      display.textContent = `${val}°${unit}`;
+    });
   });
 }
