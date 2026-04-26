@@ -134,6 +134,14 @@ export function renderBody(w) {
         </div>
       `;
     }
+    case 'weather': {
+      return `
+        <div class="weather-display">
+          <div class="weather-data">fetching location…</div>
+          <button class="weather-toggle">°C / °F</button>
+        </div>
+      `;
+    }
   }
   return '';
 }
@@ -163,6 +171,45 @@ function startSwInterval(id, w) {
     dispEl.textContent = formatStopwatch(sw.elapsed + (Date.now() - sw.startedAt));
   }, 100);
   swIntervals.set(id, intervalId);
+}
+
+function getCoords() {
+  return new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, reject)
+  );
+}
+
+async function wireWeather(el, w) {
+  const display = el.querySelector('.weather-data');
+  const toggle  = el.querySelector('.weather-toggle');
+
+  if (toggle) toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    if (display.dataset.tempC === undefined) return;
+    w.unit = (w.unit === 'F') ? 'C' : 'F';
+    dbSave(w);
+    showTemp(display, toggle, parseFloat(display.dataset.tempC), w.unit);
+  });
+
+  try {
+    const position = await getCoords();
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const tempC = data.current_weather.temperature;
+    display.dataset.tempC = tempC;
+    showTemp(display, toggle, tempC, w.unit || 'C');
+  } catch {
+    if (display) display.textContent = 'unavailable';
+  }
+}
+
+function showTemp(display, toggle, tempC, unit) {
+  const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
+  display.textContent = `${val}°${unit}`;
+  if (toggle) toggle.textContent = unit === 'F' ? '→ °C' : '→ °F';
 }
 
 function wireStopwatch(el, w) {
@@ -272,6 +319,7 @@ export function createWidgetEl(w) {
 
   el.querySelector('.act-btn.edit').addEventListener('click', e => {
     e.stopPropagation();
+    if (w.type === 'weather') return;
     if (config.editModeModel === 'b' || state.editMode) makeBodyEditable(el, w);
   });
 
@@ -293,6 +341,7 @@ export function createWidgetEl(w) {
       const bodyEl = e.target.closest('.widget-body');
       if (bodyEl && !el.querySelector('.inline-editor')) {
         if (e.target.tagName === 'INPUT') return;
+        if (w.type === 'weather') return;
         e.stopPropagation(); makeBodyEditable(el, w);
       }
       return;
@@ -311,6 +360,7 @@ export function createWidgetEl(w) {
     const bodyEl = e.target.closest('.widget-body');
     if (bodyEl && !el.querySelector('.inline-editor')) {
       if (e.target.tagName === 'INPUT') return;
+      if (w.type === 'weather') return;
       e.stopPropagation();
       makeBodyEditable(el, w);
     }
@@ -322,6 +372,7 @@ export function createWidgetEl(w) {
 
   if (w.type === 'task')      wireTaskCheckboxes(el, w);
   if (w.type === 'stopwatch') wireStopwatch(el, w);
+  if (w.type === 'weather')   wireWeather(el, w);
 
   if (w.type === 'link') {
     el.querySelectorAll('a.link-item').forEach(a => {

@@ -91,7 +91,7 @@ export function addWidget(type) {
   const w = {
     id:      crypto.randomUUID(),
     type,
-    title:   { note: 'New Note', task: 'New Tasks', link: 'New Links', stopwatch: 'Stopwatch' }[type],
+    title:   { note: 'New Note', task: 'New Tasks', link: 'New Links', stopwatch: 'Stopwatch', weather: 'Weather' }[type],
     content,
     x: snap(cx - def.w / 2 + offset),
     y: snap(cy + offset),
