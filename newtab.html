@@ -155,90 +155,96 @@
 
 <!-- ── Settings panel ─────────────────────────────────────────────────────── -->
 <div id="settings-panel">
-  <span class="sp-title">Settings</span>
+  <div class="sp-columns">
 
-  <div class="sp-section">
-    <div class="sp-section-label">Layout</div>
-    <div class="sp-list">
-      <button class="sp-item" id="btn-layout">Layout mode</button>
+    <div class="sp-left">
+      <div class="sp-section">
+        <div class="sp-section-label">Toolbar</div>
+        <label class="sp-toggle-row">
+          <span>Gmail</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-gmail" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Images</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-images" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Apps grid</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-apps" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Profile</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-avatar" checked><span class="sp-toggle-track"></span></span>
+        </label>
+      </div>
+
+      <div class="sp-section">
+        <div class="sp-section-label">Appearance</div>
+        <label class="sp-toggle-row">
+          <span>Dark mode</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-dark"><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Grid in edit mode</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-grid" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>24-hour clock</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-clock24"><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Fahrenheit</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-weather-f"><span class="sp-toggle-track"></span></span>
+        </label>
+      </div>
+
+      <div class="sp-section">
+        <div class="sp-section-label">Widgets</div>
+        <label class="sp-toggle-row">
+          <span>Clock</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-clock" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Search bar</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-search" checked><span class="sp-toggle-track"></span></span>
+        </label>
+        <label class="sp-toggle-row">
+          <span>Shortcuts</span>
+          <span class="sp-toggle"><input type="checkbox" id="tog-shortcuts" checked><span class="sp-toggle-track"></span></span>
+        </label>
+      </div>
     </div>
-  </div>
 
-  <div class="sp-section">
-    <div class="sp-section-label">Viewport</div>
-    <div class="sp-row">
-      <button class="sp-pill vm-btn" data-mode="clamp">Clamp</button>
-      <button class="sp-pill vm-btn" data-mode="pan">Pan</button>
-      <button class="sp-pill vm-btn" data-mode="pages">Pages</button>
+    <div class="sp-col-divider"></div>
+
+    <div class="sp-right">
+      <div class="sp-section">
+        <div class="sp-section-label">Layout</div>
+        <button class="sp-item" id="btn-layout">Layout mode</button>
+      </div>
+
+      <div class="sp-section">
+        <div class="sp-section-label">Viewport</div>
+        <div class="sp-row">
+          <button class="sp-pill vm-btn" data-mode="clamp">Clamp</button>
+          <button class="sp-pill vm-btn" data-mode="pan">Pan</button>
+          <button class="sp-pill vm-btn" data-mode="pages">Pages</button>
+        </div>
+      </div>
+
+      <div class="sp-section">
+        <div class="sp-section-label">Edit Mode</div>
+        <div class="sp-list">
+          <button class="sp-item em-btn" data-model="a">Mode First</button>
+          <button class="sp-item em-btn" data-model="b">Direct</button>
+          <button class="sp-item em-btn" data-model="c">Hybrid</button>
+        </div>
+      </div>
+
+      <div class="sp-version">v0.2.3</div>
     </div>
-  </div>
 
-  <div class="sp-section">
-    <div class="sp-section-label">Edit Mode</div>
-    <div class="sp-list">
-      <button class="sp-item em-btn" data-model="a">Mode First</button>
-      <button class="sp-item em-btn" data-model="b">Direct Manipulation</button>
-      <button class="sp-item em-btn" data-model="c">Hybrid</button>
-    </div>
   </div>
-
-  <div class="sp-section">
-    <div class="sp-section-label">Toolbar</div>
-    <label class="sp-toggle-row">
-      <span>Gmail</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-gmail" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Images</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-images" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Apps grid</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-apps" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Profile</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-avatar" checked><span class="sp-toggle-track"></span></span>
-    </label>
-  </div>
-
-  <div class="sp-section">
-    <div class="sp-section-label">Appearance</div>
-    <label class="sp-toggle-row">
-      <span>Dark mode</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-dark"><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Grid in edit mode</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-grid" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>24-hour clock</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-clock24"><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Weather in Fahrenheit</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-weather-f"><span class="sp-toggle-track"></span></span>
-    </label>
-  </div>
-
-  <div class="sp-section">
-    <div class="sp-section-label">Widgets</div>
-    <label class="sp-toggle-row">
-      <span>Clock</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-clock" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Search bar</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-search" checked><span class="sp-toggle-track"></span></span>
-    </label>
-    <label class="sp-toggle-row">
-      <span>Shortcuts</span>
-      <span class="sp-toggle"><input type="checkbox" id="tog-shortcuts" checked><span class="sp-toggle-track"></span></span>
-    </label>
-  </div>
-
-  <div class="sp-version">v0.2.1</div>
 </div>
 
 <!-- ── Profile panel ──────────────────────────────────────────────────────── -->
