@@ -83,6 +83,34 @@ export function initToolbarToggles() {
   });
 }
 
+// ── Chrome widget visibility toggles ─────────────────────────────────────
+
+const CHROME_TOGGLES = [
+  { id: 'tog-clock',     key: 'chrome-show-clock',     elId: 'chrome-clock'     },
+  { id: 'tog-search',    key: 'chrome-show-search',    elId: 'chrome-search'    },
+  { id: 'tog-shortcuts', key: 'chrome-show-shortcuts', elId: 'chrome-shortcuts' },
+];
+
+function applyChromeToggles() {
+  CHROME_TOGGLES.forEach(({ key, elId }) => {
+    const el = document.getElementById(elId);
+    if (el) el.style.display = localStorage.getItem(key) === '0' ? 'none' : '';
+  });
+}
+
+export function initChromeToggles() {
+  applyChromeToggles();
+  CHROME_TOGGLES.forEach(({ id, key }) => {
+    const checkbox = document.getElementById(id);
+    if (!checkbox) return;
+    checkbox.checked = localStorage.getItem(key) !== '0';
+    checkbox.addEventListener('change', () => {
+      localStorage.setItem(key, checkbox.checked ? '1' : '0');
+      applyChromeToggles();
+    });
+  });
+}
+
 // ── Theme ─────────────────────────────────────────────────────────────────
 
 export function initTheme() {
