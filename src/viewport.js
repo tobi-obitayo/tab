@@ -1,5 +1,6 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout, dbDelete } from './db.js';
+import { MIN_W, MIN_H } from './constants.js';
 import { renderAll } from './render.js';
 import { showUndoToast } from './widgets.js';
 import { snap } from './utils.js';
@@ -7,22 +8,54 @@ import { snap } from './utils.js';
 const canvas      = document.getElementById('canvas');
 const canvasInner = document.getElementById('canvas-inner');
 
-// ── Clamp widgets to visible area on resize ───────────────────────────────
+// ── Proportional rescale on resize ────────────────────────────────────────
 
-export function clampWidgetsToCanvas() {
-  if (config.viewportModel !== 'clamp') return;
-  const W = canvasInner.offsetWidth;
-  const H = canvasInner.offsetHeight;
+export function rescaleWidgets() {
+  const CW = canvasInner.offsetWidth;
+  const CH = canvasInner.offsetHeight;
+  const panOffX = config.viewportModel === 'pan' ? Math.round(1500 - CW / 2) : 0;
+  const panOffY = config.viewportModel === 'pan' ? Math.round(1500 - CH / 2) : 0;
   state.widgets.forEach(w => {
     const el = document.querySelector(`.widget[data-id="${w.id}"]`);
     if (!el) return;
-    const newX = snap(Math.max(0, Math.min(w.x, W - el.offsetWidth)));
-    const newY = snap(Math.max(0, Math.min(w.y, H - el.offsetHeight)));
-    if (newX !== w.x || newY !== w.y) {
+    el.style.left   = (Math.round(w.x * CW) + panOffX) + 'px';
+    el.style.top    = (Math.round(w.y * CH) + panOffY) + 'px';
+    el.style.width  = Math.max(MIN_W, Math.round(w.w * CW)) + 'px';
+    el.style.height = Math.max(MIN_H, Math.round(w.h * CH)) + 'px';
+  });
+  ['clock', 'search', 'shortcuts'].forEach(key => {
+    const el = document.getElementById(`chrome-${key}`);
+    if (!el || !layoutState?.[key]) return;
+    const pos = layoutState[key];
+    if (config.viewportModel === 'pan') {
+      const off = panOffset();
+      el.style.left = (Math.round(pos.x * CW) + off.x) + 'px';
+      el.style.top  = (Math.round(pos.y * CH) + off.y) + 'px';
+    } else {
+      el.style.left = Math.round(pos.x * CW) + 'px';
+      el.style.top  = Math.round(pos.y * CH) + 'px';
+    }
+  });
+}
+
+// ── Clamp widgets to visible area (used after viewport model switch) ──────
+
+export function clampWidgetsToCanvas() {
+  if (config.viewportModel !== 'clamp') return;
+  const CW = canvasInner.offsetWidth;
+  const CH = canvasInner.offsetHeight;
+  state.widgets.forEach(w => {
+    const el = document.querySelector(`.widget[data-id="${w.id}"]`);
+    if (!el) return;
+    const maxX = (CW - el.offsetWidth)  / CW;
+    const maxY = (CH - el.offsetHeight) / CH;
+    const newX = Math.max(0, Math.min(w.x, maxX));
+    const newY = Math.max(0, Math.min(w.y, maxY));
+    if (Math.abs(newX - w.x) > 0.0001 || Math.abs(newY - w.y) > 0.0001) {
       w.x = newX;
       w.y = newY;
-      el.style.left = w.x + 'px';
-      el.style.top  = w.y + 'px';
+      el.style.left = (w.x * CW) + 'px';
+      el.style.top  = (w.y * CH) + 'px';
       dbSave(w);
     }
   });
@@ -31,7 +64,7 @@ export function clampWidgetsToCanvas() {
 let resizeTimer = null;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(clampWidgetsToCanvas, 200);
+  resizeTimer = setTimeout(rescaleWidgets, 200);
 });
 
 export function syncVmButtons() {
@@ -50,6 +83,8 @@ export function panOffset() {
 export function setupViewportModel() {
   if (config.viewportModel === 'pan') {
     canvasInner.classList.add('pan-surface');
+    const CW = canvas.offsetWidth;
+    const CH = canvas.offsetHeight;
     const off = panOffset();
     pan.x = -off.x;
     pan.y = -off.y;
@@ -58,8 +93,8 @@ export function setupViewportModel() {
     ['clock', 'search', 'shortcuts'].forEach(key => {
       const el = document.getElementById(`chrome-${key}`);
       if (!el || !layoutState || !layoutState[key]) return;
-      el.style.left = (layoutState[key].x + off.x) + 'px';
-      el.style.top  = (layoutState[key].y + off.y) + 'px';
+      el.style.left = (layoutState[key].x * CW + off.x) + 'px';
+      el.style.top  = (layoutState[key].y * CH + off.y) + 'px';
     });
   }
   if (config.viewportModel === 'pages') {
@@ -78,11 +113,13 @@ export function teardownViewportModel() {
     document.body.classList.remove('space-held', 'panning');
     document.getElementById('pan-indicator').style.display = 'none';
     // Restore chrome elements to their saved clamp-mode positions
+    const CW = canvas.offsetWidth;
+    const CH = canvas.offsetHeight;
     ['clock', 'search', 'shortcuts'].forEach(key => {
       const el = document.getElementById(`chrome-${key}`);
       if (!el || !layoutState || !layoutState[key]) return;
-      el.style.left = layoutState[key].x + 'px';
-      el.style.top  = layoutState[key].y + 'px';
+      el.style.left = (layoutState[key].x * CW) + 'px';
+      el.style.top  = (layoutState[key].y * CH) + 'px';
     });
   }
   if (config.viewportModel === 'pages') {

@@ -1,5 +1,5 @@
 import { state, config } from './state.js';
-import { PALETTE } from './constants.js';
+import { PALETTE, MIN_W, MIN_H } from './constants.js';
 import { esc, hostname } from './utils.js';
 import { dbSave } from './db.js';
 import { attachDrag, attachResize } from './drag.js';
@@ -254,9 +254,13 @@ export function createWidgetEl(w) {
   el.className = 'widget';
   el.dataset.id   = w.id;
   el.dataset.type = w.type;
-  const panOffX = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetWidth  / 2) : 0;
-  const panOffY = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetHeight / 2) : 0;
-  el.style.cssText = `left:${w.x + panOffX}px; top:${w.y + panOffY}px; width:${w.w}px; height:${w.h}px; z-index:${w.z || 0};`;
+  const CW = canvas.offsetWidth;
+  const CH = canvas.offsetHeight;
+  const panOffX = config.viewportModel === 'pan' ? Math.round(1500 - CW / 2) : 0;
+  const panOffY = config.viewportModel === 'pan' ? Math.round(1500 - CH / 2) : 0;
+  const pxW = Math.max(MIN_W, Math.round(w.w * CW));
+  const pxH = Math.max(MIN_H, Math.round(w.h * CH));
+  el.style.cssText = `left:${Math.round(w.x * CW) + panOffX}px; top:${Math.round(w.y * CH) + panOffY}px; width:${pxW}px; height:${pxH}px; z-index:${w.z || 0};`;
   el.style.setProperty('--wc', w.color);
 
   const swatches = PALETTE.map((c, i) =>

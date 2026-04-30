@@ -94,12 +94,14 @@ document.addEventListener('mouseup', () => {
   }
 
   if (resizing) {
+    const CW = canvasInner.offsetWidth;
+    const CH = canvasInner.offsetHeight;
     const snappedW = Math.max(MIN_W, snap(resizing.offsetWidth));
     const snappedH = Math.max(MIN_H, snap(resizing.offsetHeight));
     resizing.style.width  = snappedW + 'px';
     resizing.style.height = snappedH + 'px';
     const w = state.widgets.find(w => w.id === resizing.dataset.id);
-    if (w) { w.w = snappedW; w.h = snappedH; dbSave(w); }
+    if (w) { w.w = snappedW / CW; w.h = snappedH / CH; dbSave(w); }
     resizing = null;
     return;
   }
@@ -121,16 +123,18 @@ document.addEventListener('mouseup', () => {
   dragging.classList.remove('dragging');
 
   // In pan mode, canvas positions include the centering offset; strip it before saving
+  const CW = canvasInner.offsetWidth;
+  const CH = canvasInner.offsetHeight;
   const saveOffX = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetWidth  / 2) : 0;
   const saveOffY = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetHeight / 2) : 0;
 
   const chromeKey = dragging.dataset.chromeKey;
   if (chromeKey) {
-    layoutState[chromeKey] = { x: snappedX - saveOffX, y: snappedY - saveOffY };
+    layoutState[chromeKey] = { x: (snappedX - saveOffX) / CW, y: (snappedY - saveOffY) / CH };
     dbSaveLayout(layoutState);
   } else {
     const w = state.widgets.find(w => w.id === dragging.dataset.id);
-    if (w) { w.x = snappedX - saveOffX; w.y = snappedY - saveOffY; dbSave(w); }
+    if (w) { w.x = (snappedX - saveOffX) / CW; w.y = (snappedY - saveOffY) / CH; dbSave(w); }
   }
   dragging = null;
 });

@@ -28,6 +28,8 @@ export function setLayoutState(v) { layoutState = v; }
 
 export function applyLayout(layout) {
   setLayoutState(layout);
+  const CW = window.innerWidth;
+  const CH = window.innerHeight - 52;
   const map = {
     clock:     document.getElementById('chrome-clock'),
     search:    document.getElementById('chrome-search'),
@@ -35,6 +37,6 @@ export function applyLayout(layout) {
   };
   for (const [key, el] of Object.entries(map)) {
     const pos = layout[key];
-    if (pos) { el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px'; el.style.visibility = 'visible'; }
+    if (pos) { el.style.left = (pos.x * CW) + 'px'; el.style.top = (pos.y * CH) + 'px'; el.style.visibility = 'visible'; }
   }
 }

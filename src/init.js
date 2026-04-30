@@ -1,4 +1,4 @@
-import { initDB, dbLoadAll, dbLoadShortcuts, dbSaveShortcut, dbLoadLayout, dbSaveLayout } from './db.js';
+import { initDB, dbLoadAll, dbSave, dbLoadShortcuts, dbSaveShortcut, dbLoadLayout, dbSaveLayout } from './db.js';
 import { state, config, applyLayout } from './state.js';
 import { DEFAULT_SHORTCUTS } from './constants.js';
 import { snap } from './utils.js';
@@ -10,6 +10,25 @@ import { initAppsPanel, initSettingsPanel, initProfilePanel } from './panels.js'
 import { initClock } from './clock.js';
 import { attachChromeDrag } from './drag.js';
 import { addWidget } from './widgets.js';
+
+// ── One-time migration: pixel coords → viewport fractions ─────────────────
+async function migrateToFractions(widgets, layout) {
+  if (localStorage.getItem('fracCoords')) return;
+  const CW = window.innerWidth;
+  const CH = window.innerHeight - 52;
+  widgets.forEach(w => {
+    w.x /= CW; w.y /= CH;
+    w.w /= CW; w.h /= CH;
+  });
+  await Promise.all(widgets.map(dbSave));
+  if (layout) {
+    for (const key of ['clock', 'search', 'shortcuts']) {
+      if (layout[key]) { layout[key].x /= CW; layout[key].y /= CH; }
+    }
+    await dbSaveLayout(layout);
+  }
+  localStorage.setItem('fracCoords', '1');
+}
 
 marked.use({
   breaks: true,
@@ -61,6 +80,8 @@ async function init() {
     };
     await dbSaveLayout(layout);
   }
+
+  await migrateToFractions(state.widgets, layout);
 
   applyLayout(layout);
 

@@ -84,11 +84,13 @@ export function addWidget(type) {
   const color  = PALETTE[state.colorCursor % PALETTE.length];
   state.colorCursor++;
 
+  const CW     = window.innerWidth;
+  const CH     = window.innerHeight - 52;
   const def    = DEFAULTS[type] || { w: 240, h: 200 };
   const vis    = visibleWidgets();
   const offset = vis.length * 20; // GRID
 
-  const vcx    = Math.round(window.innerWidth / 2);
+  const vcx    = Math.round(CW / 2);
   const cx     = config.viewportModel === 'pan' ? vcx - pan.x : vcx;
   const bottom = chromeBottom();
   const cy     = bottom > 0 ? bottom + 40 : 40;
@@ -97,15 +99,18 @@ export function addWidget(type) {
     ? JSON.stringify({ elapsed: 0, running: false, startedAt: null })
     : '';
 
+  const pxX = snap(cx - def.w / 2 + offset);
+  const pxY = snap(cy + offset);
+
   const w = {
     id:      crypto.randomUUID(),
     type,
     title:   { note: 'New Note', task: 'New Tasks', link: 'New Links', stopwatch: 'Stopwatch', weather: 'Weather' }[type],
     content,
-    x: snap(cx - def.w / 2 + offset),
-    y: snap(cy + offset),
-    w: def.w,
-    h: def.h,
+    x: pxX / CW,
+    y: pxY / CH,
+    w: def.w / CW,
+    h: def.h / CH,
     color,
   };
 

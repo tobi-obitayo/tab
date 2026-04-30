@@ -69,7 +69,7 @@ body {
 
 .brand {
   font-family: 'Geist', sans-serif;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   flex-shrink: 0;
@@ -84,7 +84,7 @@ body {
 /* ── Top-right Google-style cluster ─────────────────────────────────── */
 .gc-link {
   font-family: 'Geist', sans-serif;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text);
   text-decoration: none;
   padding: 5px 8px;
@@ -118,7 +118,7 @@ body {
   position: fixed;
   top: calc(var(--toolbar-h) + 6px);
   right: 8px;
-  width: 320px;
+  width: min(320px, 100vw - 16px);
   background: #2a2b2e;
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.36), 0 2px 8px rgba(0,0,0,0.2);
@@ -206,7 +206,7 @@ body {
   position: fixed;
   top: calc(var(--toolbar-h) + 6px);
   right: 8px;
-  width: 300px;
+  width: min(300px, 100vw - 16px);
   background: #2a2b2e;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25);
@@ -243,14 +243,14 @@ body {
 }
 
 .pp-name {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #e8eaed;
   line-height: 1.2;
 }
 
 .pp-email {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(232,234,237,0.6);
   margin-top: -4px;
 }
@@ -461,7 +461,7 @@ body.layout-mode .layout-indicator { display: block; }
   gap: 10px;
   padding: 10px 16px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   transition: background 0.1s;
   user-select: none;
@@ -537,7 +537,7 @@ body.layout-mode .widget { pointer-events: none; }
   box-shadow: var(--shadow), 0 0 0 1px var(--border);
   padding: 0 20px 0 48px;
   font-family: 'Geist', sans-serif;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   outline: none;
   transition: box-shadow 0.2s, background 0.2s;
@@ -891,7 +891,7 @@ body.panning     { cursor: grabbing !important; }
   position: fixed;
   top: calc(var(--toolbar-h) + 6px);
   right: 8px;
-  width: 440px;
+  width: min(440px, 100vw - 16px);
   background: #2a2b2e;
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.36), 0 2px 8px rgba(0,0,0,0.2);
@@ -1036,9 +1036,9 @@ body.panning     { cursor: grabbing !important; }
 /* ── Empty state ────────────────────────────────────────────────────── */
 #empty {
   position: absolute;
-  top: 480px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
   user-select: none;
@@ -1046,12 +1046,12 @@ body.panning     { cursor: grabbing !important; }
 }
 #empty h2 {
   font-family: 'Geist', sans-serif;
-  font-size: 26px;
+  font-size: 1.625rem;
   font-style: italic;
   color: color-mix(in srgb, var(--text) 14%, transparent);
   font-weight: 300;
 }
-#empty p { font-size: 11px; color: color-mix(in srgb, var(--text) 13%, transparent); margin-top: 6px; }
+#empty p { font-size: 0.6875rem; color: color-mix(in srgb, var(--text) 13%, transparent); margin-top: 6px; }
 
 /* ── Widget card ────────────────────────────────────────────────────── */
 .widget {
@@ -1094,7 +1094,7 @@ body.edit-mode .widget-header   { cursor: grab; }
 
 .widget-title {
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text);
   flex: 1;
@@ -1167,7 +1167,7 @@ body.edit-mode-b .widget.actions-open .widget-actions { display: flex; }
   flex: 1;
   padding: 0 14px 14px;
   overflow: auto;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.65;
   color: color-mix(in srgb, var(--text) 68%, transparent);
   user-select: text;
@@ -1178,9 +1178,9 @@ body.edit-mode-b .widget.actions-open .widget-actions { display: flex; }
   line-height: 1.2;
   margin-bottom: 4px;
 }
-.widget-body h1 { font-size: 21px; }
-.widget-body h2 { font-size: 17px; }
-.widget-body h3 { font-size: 14px; }
+.widget-body h1 { font-size: 1.3125rem; }
+.widget-body h2 { font-size: 1.0625rem; }
+.widget-body h3 { font-size: 0.875rem; }
 .widget-body p  { margin-bottom: 6px; }
 .widget-body ul, .widget-body ol { padding-left: 16px; margin-bottom: 6px; }
 .widget-body a  { color: var(--text); text-decoration-color: rgba(0,0,0,0.3); }
@@ -1403,7 +1403,7 @@ body.edit-mode #btn-hint { display: flex; }
   height: 100%;
   min-height: 80px;
   font-family: 'Geist', sans-serif;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.65;
   color: color-mix(in srgb, var(--text) 68%, transparent);
   background: transparent;
@@ -1415,7 +1415,7 @@ body.edit-mode #btn-hint { display: flex; }
 
 .inline-title-input {
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text);
   background: transparent;
@@ -1449,7 +1449,7 @@ body.edit-mode #btn-hint { display: flex; }
   gap: 18px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.5);
 }
-.confirm-box p { font-size: 14px; line-height: 1.5; }
+.confirm-box p { font-size: 0.875rem; line-height: 1.5; }
 .confirm-btns { display: flex; gap: 8px; justify-content: flex-end; }
 .confirm-cancel {
   padding: 7px 16px; border-radius: 8px; border: none;
@@ -1463,6 +1463,12 @@ body.edit-mode #btn-hint { display: flex; }
   font-size: 13px; font-weight: 500; transition: background 0.12s;
 }
 .confirm-ok:hover { background: #b91c1c; }
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .sp-columns { flex-direction: column; }
+  .sp-col-divider { width: auto; height: 1px; }
+}
 
 /* ── Page delete button ─────────────────────────────────────────────── */
 .page-del {
