@@ -3,7 +3,7 @@ import { PALETTE, DEFAULTS } from './constants.js';
 import { dbSave, dbDelete } from './db.js';
 import { snap } from './utils.js';
 // Circular imports — safe because cross-calls only happen in callbacks/promise handlers (runtime, not load time)
-import { createWidgetEl, syncEmptyState, visibleWidgets } from './render.js';
+import { createWidgetEl, syncEmptyState, visibleWidgets, clearStopwatchInterval } from './render.js';
 import { setEditMode } from './settings.js';
 import { makeTitleEditable } from './editor.js';
 
@@ -56,6 +56,7 @@ export function deleteWidget(id) {
   const widget = state.widgets.find(w => w.id === id);
   if (!widget) return;
   const el = document.querySelector(`.widget[data-id="${id}"]`);
+  clearStopwatchInterval(id);
   state.widgets = state.widgets.filter(w => w.id !== id);
   el?.remove();
   syncEmptyState();

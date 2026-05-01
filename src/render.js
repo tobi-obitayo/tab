@@ -19,6 +19,14 @@ export function clearStopwatchIntervals() {
   swIntervals.clear();
 }
 
+export function clearStopwatchInterval(id) {
+  const intervalId = swIntervals.get(id);
+  if (intervalId !== undefined) {
+    clearInterval(intervalId);
+    swIntervals.delete(id);
+  }
+}
+
 export function visibleWidgets() {
   if (config.viewportModel === 'pages')
     return state.widgets.filter(w => (w.page ?? 0) === state.currentPage);
