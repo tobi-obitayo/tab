@@ -1,5 +1,5 @@
 import { state, config } from './state.js';
-import { PALETTE, MIN_W, MIN_H } from './constants.js';
+import { PALETTE, MIN_W, MIN_H, STORAGE_KEYS } from './constants.js';
 import { esc, hostname } from './utils.js';
 import { dbSave } from './db.js';
 import { attachDrag, attachResize } from './drag.js';
@@ -204,7 +204,7 @@ async function wireWeather(el, w) {
 
     const tempC = weatherData.current_weather.temperature;
     display.dataset.tempC = tempC;
-    const unit = localStorage.getItem('weatherUnit') || 'C';
+    const unit = localStorage.getItem(STORAGE_KEYS.WEATHER_UNIT) || 'C';
     const val = unit === 'F' ? ((tempC * 9 / 5) + 32).toFixed(1) : tempC;
     if (display) display.textContent = `${val}°${unit}`;
 

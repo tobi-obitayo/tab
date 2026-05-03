@@ -1,6 +1,7 @@
 import { syncVmButtons } from './viewport.js';
 import { syncEmButtons } from './settings.js';
 import { faviconSrc, esc } from './utils.js';
+import { STORAGE_KEYS } from './constants.js';
 
 const GOOGLE_APPS = [
   { label: 'Search',    url: 'https://www.google.com'       },
@@ -83,8 +84,6 @@ export function initSettingsPanel() {
 export function initProfilePanel() {
   const avatarBtn    = document.getElementById('avatar');
   const profilePanel = document.getElementById('profile-panel');
-  const PROFILE_KEY  = 'tabProfileName';
-  const EMAIL_KEY    = 'tabProfileEmail';
 
   function getInitials(name) {
     const parts = name.trim().split(/\s+/);
@@ -93,8 +92,8 @@ export function initProfilePanel() {
   }
 
   function syncProfile() {
-    const name  = localStorage.getItem(PROFILE_KEY) || 'User';
-    const email = localStorage.getItem(EMAIL_KEY)   || 'user@gmail.com';
+    const name  = localStorage.getItem(STORAGE_KEYS.PROFILE_NAME)  || 'User';
+    const email = localStorage.getItem(STORAGE_KEYS.PROFILE_EMAIL) || 'user@gmail.com';
     const init  = getInitials(name);
 
     avatarBtn.textContent                                       = init[0];
@@ -135,8 +134,8 @@ export function initProfilePanel() {
 
   document.getElementById('pp-signout').addEventListener('click', () => {
     if (!confirm('Clear your profile info?')) return;
-    localStorage.removeItem(PROFILE_KEY);
-    localStorage.removeItem(EMAIL_KEY);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_NAME);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_EMAIL);
     syncProfile();
     profilePanel.classList.remove('open');
   });

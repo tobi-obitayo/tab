@@ -1,7 +1,9 @@
+import { STORAGE_KEYS } from './constants.js';
+
 // Mutable config — persisted to localStorage
 export const config = {
-  viewportModel: localStorage.getItem('viewportModel') || 'clamp',
-  editModeModel: localStorage.getItem('editModeModel') || 'c',
+  viewportModel: localStorage.getItem(STORAGE_KEYS.VIEWPORT_MODEL) || 'clamp',
+  editModeModel: localStorage.getItem(STORAGE_KEYS.EDIT_MODE_MODEL) || 'c',
 };
 
 export const state = {

@@ -1,6 +1,7 @@
 import { state, config, layoutState } from './state.js';
 import { dbSaveLayout } from './db.js';
 import { updateClock } from './clock.js';
+import { STORAGE_KEYS } from './constants.js';
 
 const btnEdit   = document.getElementById('btn-edit');
 const btnLayout = document.getElementById('btn-layout');
@@ -38,7 +39,7 @@ export function syncEmButtons() {
 export function setEditModeModel(model) {
   if (model === config.editModeModel) return;
   config.editModeModel = model;
-  localStorage.setItem('editModeModel', model);
+  localStorage.setItem(STORAGE_KEYS.EDIT_MODE_MODEL, model);
   btnEdit.style.display = model === 'b' ? 'none' : '';
   document.body.classList.toggle('edit-mode-b', model === 'b');
   if (model !== 'b') setEditMode(false);
@@ -56,10 +57,10 @@ export function initEditMode() {
 // ── Toolbar visibility toggles ────────────────────────────────────────────
 
 const TOOLBAR_TOGGLES = [
-  { id: 'tog-gmail',  key: 'toolbar-gmail',  elId: 'gc-gmail'  },
-  { id: 'tog-images', key: 'toolbar-images', elId: 'gc-images' },
-  { id: 'tog-apps',   key: 'toolbar-apps',   elId: 'btn-apps'  },
-  { id: 'tog-avatar', key: 'toolbar-avatar', elId: 'avatar'    },
+  { id: 'tog-gmail',  key: STORAGE_KEYS.TOOLBAR_GMAIL,   elId: 'gc-gmail'  },
+  { id: 'tog-images', key: STORAGE_KEYS.TOOLBAR_IMAGES,  elId: 'gc-images' },
+  { id: 'tog-apps',   key: STORAGE_KEYS.TOOLBAR_APPS,    elId: 'btn-apps'  },
+  { id: 'tog-avatar', key: STORAGE_KEYS.TOOLBAR_AVATAR,  elId: 'avatar'    },
 ];
 
 function applyToolbarToggles() {
@@ -86,9 +87,9 @@ export function initToolbarToggles() {
 // ── Chrome widget visibility toggles ─────────────────────────────────────
 
 const CHROME_TOGGLES = [
-  { id: 'tog-clock',     key: 'chrome-show-clock',     elId: 'chrome-clock'     },
-  { id: 'tog-search',    key: 'chrome-show-search',    elId: 'chrome-search'    },
-  { id: 'tog-shortcuts', key: 'chrome-show-shortcuts', elId: 'chrome-shortcuts' },
+  { id: 'tog-clock',     key: STORAGE_KEYS.CHROME_CLOCK,      elId: 'chrome-clock'     },
+  { id: 'tog-search',    key: STORAGE_KEYS.CHROME_SEARCH,     elId: 'chrome-search'    },
+  { id: 'tog-shortcuts', key: STORAGE_KEYS.CHROME_SHORTCUTS,  elId: 'chrome-shortcuts' },
 ];
 
 function applyChromeToggles() {
@@ -121,14 +122,14 @@ export function initTheme() {
     document.getElementById('tab-preload')?.remove();
   }
 
-  const stored = localStorage.getItem('theme');
+  const stored = localStorage.getItem(STORAGE_KEYS.THEME);
   applyTheme(stored !== null ? stored === 'dark' : true);
 
   document.addEventListener('change', e => {
     if (e.target.id !== 'tog-dark') return;
     const dark = e.target.checked;
     applyTheme(dark);
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    localStorage.setItem(STORAGE_KEYS.THEME, dark ? 'dark' : 'light');
   });
 }
 
@@ -141,11 +142,11 @@ export function initGrid() {
     if (tog) tog.checked = on;
   }
 
-  applyGrid(localStorage.getItem('grid') !== '0');
+  applyGrid(localStorage.getItem(STORAGE_KEYS.GRID) !== '0');
 
   document.addEventListener('change', e => {
     if (e.target.id !== 'tog-grid') return;
-    localStorage.setItem('grid', e.target.checked ? '1' : '0');
+    localStorage.setItem(STORAGE_KEYS.GRID, e.target.checked ? '1' : '0');
     applyGrid(e.target.checked);
   });
 }
@@ -155,11 +156,11 @@ export function initGrid() {
 export function initClockFormat() {
   const tog = document.getElementById('tog-clock24');
   if (!tog) return;
-  tog.checked = localStorage.getItem('clockFormat') === '24';
+  tog.checked = localStorage.getItem(STORAGE_KEYS.CLOCK_FORMAT) === '24';
   tog.addEventListener('change', () => {
     const clockBlock = document.getElementById('chrome-clock');
     const oldCenter = clockBlock ? clockBlock.offsetLeft + clockBlock.offsetWidth / 2 : null;
-    localStorage.setItem('clockFormat', tog.checked ? '24' : '12');
+    localStorage.setItem(STORAGE_KEYS.CLOCK_FORMAT, tog.checked ? '24' : '12');
     updateClock();
     if (oldCenter !== null && clockBlock) {
       requestAnimationFrame(() => {
@@ -177,10 +178,10 @@ export function initClockFormat() {
 export function initWeatherUnit() {
   const tog = document.getElementById('tog-weather-f');
   if (!tog) return;
-  tog.checked = localStorage.getItem('weatherUnit') === 'F';
+  tog.checked = localStorage.getItem(STORAGE_KEYS.WEATHER_UNIT) === 'F';
   tog.addEventListener('change', () => {
     const unit = tog.checked ? 'F' : 'C';
-    localStorage.setItem('weatherUnit', unit);
+    localStorage.setItem(STORAGE_KEYS.WEATHER_UNIT, unit);
     document.querySelectorAll('.widget[data-type="weather"]').forEach(el => {
       const display = el.querySelector('.weather-data');
       if (!display || display.dataset.tempC === undefined) return;

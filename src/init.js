@@ -1,6 +1,6 @@
 import { initDB, dbLoadAll, dbSave, dbLoadShortcuts, dbSaveShortcut, dbLoadLayout, dbSaveLayout } from './db.js';
 import { state, config, applyLayout } from './state.js';
-import { DEFAULT_SHORTCUTS } from './constants.js';
+import { DEFAULT_SHORTCUTS, STORAGE_KEYS } from './constants.js';
 import { snap } from './utils.js';
 import { renderAll } from './render.js';
 import { renderShortcuts } from './shortcuts.js';
@@ -13,7 +13,7 @@ import { addWidget } from './widgets.js';
 
 // ── One-time migration: pixel coords → viewport fractions ─────────────────
 async function migrateToFractions(widgets, layout) {
-  if (localStorage.getItem('fracCoords')) return;
+  if (localStorage.getItem(STORAGE_KEYS.FRAC_COORDS)) return;
   const CW = window.innerWidth;
   const CH = window.innerHeight - 52;
   widgets.forEach(w => {
@@ -27,7 +27,7 @@ async function migrateToFractions(widgets, layout) {
     }
     await dbSaveLayout(layout);
   }
-  localStorage.setItem('fracCoords', '1');
+  localStorage.setItem(STORAGE_KEYS.FRAC_COORDS, '1');
 }
 
 marked.use({

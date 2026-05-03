@@ -32,3 +32,22 @@ export const DEFAULT_SHORTCUTS = [
   { id: 4, label: 'Maps',     url: 'https://maps.google.com'     },
   { id: 5, label: 'ChatGPT',  url: 'https://chat.openai.com'     },
 ];
+
+export const STORAGE_KEYS = {
+  VIEWPORT_MODEL:   'viewportModel',
+  EDIT_MODE_MODEL:  'editModeModel',
+  FRAC_COORDS:      'fracCoords',
+  THEME:            'theme',
+  GRID:             'grid',
+  CLOCK_FORMAT:     'clockFormat',
+  WEATHER_UNIT:     'weatherUnit',
+  PROFILE_NAME:     'tabProfileName',
+  PROFILE_EMAIL:    'tabProfileEmail',
+  TOOLBAR_GMAIL:    'toolbar-gmail',
+  TOOLBAR_IMAGES:   'toolbar-images',
+  TOOLBAR_APPS:     'toolbar-apps',
+  TOOLBAR_AVATAR:   'toolbar-avatar',
+  CHROME_CLOCK:     'chrome-show-clock',
+  CHROME_SEARCH:    'chrome-show-search',
+  CHROME_SHORTCUTS: 'chrome-show-shortcuts',
+};

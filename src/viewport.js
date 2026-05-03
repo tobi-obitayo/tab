@@ -1,6 +1,6 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout, dbDelete } from './db.js';
-import { MIN_W, MIN_H } from './constants.js';
+import { MIN_W, MIN_H, STORAGE_KEYS } from './constants.js';
 import { renderAll } from './render.js';
 import { showUndoToast } from './widgets.js';
 import { snap } from './utils.js';
@@ -131,7 +131,7 @@ export function setViewportModel(mode) {
   if (mode === config.viewportModel) return;
   teardownViewportModel();
   config.viewportModel = mode;
-  localStorage.setItem('viewportModel', mode);
+  localStorage.setItem(STORAGE_KEYS.VIEWPORT_MODEL, mode);
   setupViewportModel();
   renderAll();
   clampWidgetsToCanvas();
