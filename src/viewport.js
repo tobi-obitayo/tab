@@ -1,6 +1,6 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout, dbDelete } from './db.js';
-import { MIN_W, MIN_H, STORAGE_KEYS } from './constants.js';
+import { MIN_W, MIN_H, STORAGE_KEYS, PAN_CENTER } from './constants.js';
 import { renderAll } from './render.js';
 import { showUndoToast } from './widgets.js';
 import { snap } from './utils.js';
@@ -13,8 +13,8 @@ const canvasInner = document.getElementById('canvas-inner');
 export function rescaleWidgets() {
   const CW = canvasInner.offsetWidth;
   const CH = canvasInner.offsetHeight;
-  const panOffX = config.viewportModel === 'pan' ? Math.round(1500 - CW / 2) : 0;
-  const panOffY = config.viewportModel === 'pan' ? Math.round(1500 - CH / 2) : 0;
+  const panOffX = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CW / 2) : 0;
+  const panOffY = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CH / 2) : 0;
   state.widgets.forEach(w => {
     const el = document.querySelector(`.widget[data-id="${w.id}"]`);
     if (!el) return;
@@ -75,8 +75,8 @@ export function syncVmButtons() {
 
 export function panOffset() {
   return {
-    x: Math.round(1500 - canvas.offsetWidth  / 2),
-    y: Math.round(1500 - canvas.offsetHeight / 2),
+    x: Math.round(PAN_CENTER - canvas.offsetWidth  / 2),
+    y: Math.round(PAN_CENTER - canvas.offsetHeight / 2),
   };
 }
 

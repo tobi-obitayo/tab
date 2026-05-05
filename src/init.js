@@ -1,6 +1,6 @@
 import { initDB, dbLoadAll, dbSave, dbLoadShortcuts, dbSaveShortcut, dbLoadLayout, dbSaveLayout } from './db.js';
 import { state, config, applyLayout } from './state.js';
-import { DEFAULT_SHORTCUTS, STORAGE_KEYS } from './constants.js';
+import { DEFAULT_SHORTCUTS, STORAGE_KEYS, TOOLBAR_H } from './constants.js';
 import { snap } from './utils.js';
 import { renderAll } from './render.js';
 import { renderShortcuts } from './shortcuts.js';
@@ -15,7 +15,7 @@ import { addWidget } from './widgets.js';
 async function migrateToFractions(widgets, layout) {
   if (localStorage.getItem(STORAGE_KEYS.FRAC_COORDS)) return;
   const CW = window.innerWidth;
-  const CH = window.innerHeight - 52;
+  const CH = window.innerHeight - TOOLBAR_H;
   widgets.forEach(w => {
     w.x /= CW; w.y /= CH;
     w.w /= CW; w.h /= CH;
@@ -58,7 +58,7 @@ async function init() {
     await document.fonts.ready;
     await new Promise(r => requestAnimationFrame(r));
     const vw          = window.innerWidth;
-    const vh          = window.innerHeight - 52;
+    const vh          = window.innerHeight - TOOLBAR_H;
     const clockBlock  = document.getElementById('chrome-clock');
     const searchBlock = document.getElementById('chrome-search');
     const scBlock     = document.getElementById('chrome-shortcuts');

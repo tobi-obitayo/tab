@@ -1,5 +1,5 @@
 import { state, config, pan } from './state.js';
-import { PALETTE, DEFAULTS } from './constants.js';
+import { PALETTE, DEFAULTS, TOOLBAR_H } from './constants.js';
 import { dbSave, dbDelete } from './db.js';
 import { snap } from './utils.js';
 // Circular imports — safe because cross-calls only happen in callbacks/promise handlers (runtime, not load time)
@@ -86,7 +86,7 @@ export function addWidget(type) {
   state.colorCursor++;
 
   const CW     = window.innerWidth;
-  const CH     = window.innerHeight - 52;
+  const CH     = window.innerHeight - TOOLBAR_H;
   const def    = DEFAULTS[type] || { w: 240, h: 200 };
   const vis    = visibleWidgets();
   const offset = vis.length * 20; // GRID

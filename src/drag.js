@@ -1,7 +1,7 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout } from './db.js';
 import { snap } from './utils.js';
-import { MIN_W, MIN_H } from './constants.js';
+import { MIN_W, MIN_H, PAN_SIZE, PAN_CENTER } from './constants.js';
 
 const canvas      = document.getElementById('canvas');
 const canvasInner = document.getElementById('canvas-inner');
@@ -61,13 +61,13 @@ export function attachChromeDrag(blockEl) {
 
 document.addEventListener('mousemove', e => {
   if (pan.active) {
-    pan.x = Math.min(0, Math.max(canvas.offsetWidth  - 3000, pan.originX + (e.clientX - pan.startX)));
-    pan.y = Math.min(0, Math.max(canvas.offsetHeight - 3000, pan.originY + (e.clientY - pan.startY)));
+    pan.x = Math.min(0, Math.max(canvas.offsetWidth  - PAN_SIZE, pan.originX + (e.clientX - pan.startX)));
+    pan.y = Math.min(0, Math.max(canvas.offsetHeight - PAN_SIZE, pan.originY + (e.clientY - pan.startY)));
     canvasInner.style.transform = `translate(${pan.x}px,${pan.y}px)`;
     const panIndicator = document.getElementById('pan-indicator');
-    // Indicator shows 0,0 at the centered origin (canvas 1500,1500)
-    const indX = (canvas.offsetWidth  / 2 - 1500 - pan.x) | 0;
-    const indY = (canvas.offsetHeight / 2 - 1500 - pan.y) | 0;
+    // Indicator shows 0,0 at the centered origin (canvas PAN_CENTER,PAN_CENTER)
+    const indX = (canvas.offsetWidth  / 2 - PAN_CENTER - pan.x) | 0;
+    const indY = (canvas.offsetHeight / 2 - PAN_CENTER - pan.y) | 0;
     panIndicator.textContent = `${indX}, ${indY}`;
     panIndicator.style.display = 'block';
     return;
@@ -125,8 +125,8 @@ document.addEventListener('mouseup', () => {
   // In pan mode, canvas positions include the centering offset; strip it before saving
   const CW = canvasInner.offsetWidth;
   const CH = canvasInner.offsetHeight;
-  const saveOffX = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetWidth  / 2) : 0;
-  const saveOffY = config.viewportModel === 'pan' ? Math.round(1500 - canvas.offsetHeight / 2) : 0;
+  const saveOffX = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - canvas.offsetWidth  / 2) : 0;
+  const saveOffY = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - canvas.offsetHeight / 2) : 0;
 
   const chromeKey = dragging.dataset.chromeKey;
   if (chromeKey) {

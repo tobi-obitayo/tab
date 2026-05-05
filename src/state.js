@@ -1,4 +1,4 @@
-import { STORAGE_KEYS } from './constants.js';
+import { STORAGE_KEYS, TOOLBAR_H } from './constants.js';
 
 // Mutable config — persisted to localStorage
 export const config = {
@@ -31,7 +31,7 @@ export function setLayoutState(v) { layoutState = v; }
 export function applyLayout(layout) {
   setLayoutState(layout);
   const CW = window.innerWidth;
-  const CH = window.innerHeight - 52;
+  const CH = window.innerHeight - TOOLBAR_H;
   const map = {
     clock:     document.getElementById('chrome-clock'),
     search:    document.getElementById('chrome-search'),

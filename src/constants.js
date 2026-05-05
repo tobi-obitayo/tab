@@ -1,6 +1,9 @@
-export const GRID  = 20;
-export const MIN_W = 160;
-export const MIN_H = 100;
+export const GRID      = 20;
+export const MIN_W     = 160;
+export const MIN_H     = 100;
+export const TOOLBAR_H = 52;   // height of the top chrome bar in px
+export const PAN_SIZE  = 3000; // pan canvas dimensions (square)
+export const PAN_CENTER = 1500; // PAN_SIZE / 2 — logical origin of the pan surface
 
 export const PALETTE = ['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
 
