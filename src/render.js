@@ -1,6 +1,6 @@
 import { state, config } from './state.js';
-import { PALETTE, MIN_W, MIN_H, STORAGE_KEYS, PAN_CENTER } from './constants.js';
-import { esc, hostname } from './utils.js';
+import { PALETTE, MIN_W, MIN_H, STORAGE_KEYS } from './constants.js';
+import { esc, hostname, panOffset } from './utils.js';
 import { dbSave } from './db.js';
 import { attachDrag, attachResize } from './drag.js';
 // Circular imports — safe because cross-calls only happen in event handlers (runtime, not load time)
@@ -264,8 +264,7 @@ export function createWidgetEl(w) {
   el.dataset.type = w.type;
   const CW = canvas.offsetWidth;
   const CH = canvas.offsetHeight;
-  const panOffX = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CW / 2) : 0;
-  const panOffY = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CH / 2) : 0;
+  const { x: panOffX, y: panOffY } = config.viewportModel === 'pan' ? panOffset(CW, CH) : { x: 0, y: 0 };
   const pxW = Math.max(MIN_W, Math.round(w.w * CW));
   const pxH = Math.max(MIN_H, Math.round(w.h * CH));
   el.style.cssText = `left:${Math.round(w.x * CW) + panOffX}px; top:${Math.round(w.y * CH) + panOffY}px; width:${pxW}px; height:${pxH}px; z-index:${w.z || 0};`;

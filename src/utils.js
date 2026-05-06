@@ -1,6 +1,13 @@
-import { GRID, ICON_OVERRIDES } from './constants.js';
+import { GRID, ICON_OVERRIDES, PAN_CENTER } from './constants.js';
 
 export function snap(n) { return Math.round(n / GRID) * GRID; }
+
+export function panOffset(viewportW, viewportH) {
+  return {
+    x: Math.round(PAN_CENTER - viewportW / 2),
+    y: Math.round(PAN_CENTER - viewportH / 2),
+  };
+}
 
 export function esc(str) {
   return String(str ?? '')

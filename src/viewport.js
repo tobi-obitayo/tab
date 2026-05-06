@@ -1,9 +1,9 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout, dbDelete } from './db.js';
-import { MIN_W, MIN_H, STORAGE_KEYS, PAN_CENTER } from './constants.js';
+import { MIN_W, MIN_H, STORAGE_KEYS } from './constants.js';
 import { renderAll } from './render.js';
 import { showUndoToast } from './widgets.js';
-import { snap } from './utils.js';
+import { snap, panOffset } from './utils.js';
 
 const canvas      = document.getElementById('canvas');
 const canvasInner = document.getElementById('canvas-inner');
@@ -13,13 +13,11 @@ const canvasInner = document.getElementById('canvas-inner');
 export function rescaleWidgets() {
   const CW = canvasInner.offsetWidth;
   const CH = canvasInner.offsetHeight;
-  const panOffX = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CW / 2) : 0;
-  const panOffY = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - CH / 2) : 0;
   state.widgets.forEach(w => {
     const el = document.querySelector(`.widget[data-id="${w.id}"]`);
     if (!el) return;
-    el.style.left   = (Math.round(w.x * CW) + panOffX) + 'px';
-    el.style.top    = (Math.round(w.y * CH) + panOffY) + 'px';
+    el.style.left   = Math.round(w.x * CW) + 'px';
+    el.style.top    = Math.round(w.y * CH) + 'px';
     el.style.width  = Math.max(MIN_W, Math.round(w.w * CW)) + 'px';
     el.style.height = Math.max(MIN_H, Math.round(w.h * CH)) + 'px';
   });
@@ -28,7 +26,7 @@ export function rescaleWidgets() {
     if (!el || !layoutState?.[key]) return;
     const pos = layoutState[key];
     if (config.viewportModel === 'pan') {
-      const off = panOffset();
+      const off = panOffset(canvas.offsetWidth, canvas.offsetHeight);
       el.style.left = (Math.round(pos.x * CW) + off.x) + 'px';
       el.style.top  = (Math.round(pos.y * CH) + off.y) + 'px';
     } else {
@@ -73,19 +71,13 @@ export function syncVmButtons() {
   });
 }
 
-export function panOffset() {
-  return {
-    x: Math.round(PAN_CENTER - canvas.offsetWidth  / 2),
-    y: Math.round(PAN_CENTER - canvas.offsetHeight / 2),
-  };
-}
 
 export function setupViewportModel() {
   if (config.viewportModel === 'pan') {
     canvasInner.classList.add('pan-surface');
     const CW = canvas.offsetWidth;
     const CH = canvas.offsetHeight;
-    const off = panOffset();
+    const off = panOffset(canvas.offsetWidth, canvas.offsetHeight);
     pan.x = -off.x;
     pan.y = -off.y;
     canvasInner.style.transform = `translate(${pan.x}px,${pan.y}px)`;

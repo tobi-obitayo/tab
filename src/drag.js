@@ -1,6 +1,6 @@
 import { state, config, pan, layoutState } from './state.js';
 import { dbSave, dbSaveLayout } from './db.js';
-import { snap } from './utils.js';
+import { snap, panOffset } from './utils.js';
 import { MIN_W, MIN_H, PAN_SIZE, PAN_CENTER } from './constants.js';
 
 const canvas      = document.getElementById('canvas');
@@ -125,8 +125,7 @@ document.addEventListener('mouseup', () => {
   // In pan mode, canvas positions include the centering offset; strip it before saving
   const CW = canvasInner.offsetWidth;
   const CH = canvasInner.offsetHeight;
-  const saveOffX = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - canvas.offsetWidth  / 2) : 0;
-  const saveOffY = config.viewportModel === 'pan' ? Math.round(PAN_CENTER - canvas.offsetHeight / 2) : 0;
+  const { x: saveOffX, y: saveOffY } = config.viewportModel === 'pan' ? panOffset(canvas.offsetWidth, canvas.offsetHeight) : { x: 0, y: 0 };
 
   const chromeKey = dragging.dataset.chromeKey;
   if (chromeKey) {
